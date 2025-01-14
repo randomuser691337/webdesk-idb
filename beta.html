@@ -87,39 +87,12 @@
     <div id="setuparea">
     </div>
     <div id="notif"></div>
-    <div id="death"
-        style="z-index: 9999; position: fixed; left: 0px; right: 0px; bottom: 0px; top: 0px; background-color: #000;">
-    </div>
-    <div id="crash"
-        style="z-index: 9999; position: fixed; left: 0px; right: 0px; bottom: 0px; top: 0px; background-color: #000; display: none;">
-        <div class="center" style="color: #fff !important;">
-            <img style="width: 50px; height: 50px; border: none; border-radius: 12px;"
-                src="./assets/img/icons/hlcrab.png"></img>
-            <p class="h2">An error occured</p>
-            <p>Try a reboot, it usually works.</p>
-            <button class="b1" onclick="reboot();" style="color: #fff !important">Reboot</button>
-        </div>
-    </div>
 </body>
 
 </html>
-<script src="./assets/code/vals.js"></script>
-<script src="./assets/lib/jq.js"></script>
-<script src="./assets/lib/jszip.js"></script>
-<script src="./assets/lib/peer.js"></script>
-<script src="./assets/lib/weather.js"></script>
-<script src="./assets/lib/qrcode.js"></script>
-<script src="./assets/lib/ace/ace.js"></script>
-<script src="./assets/lib/picker.js"></script>
-<script src="./assets/code/core.js"></script>
-<script src="./assets/code/wm.js"></script>
-<script src="./assets/code/services.js"></script>
-<script src="./assets/code/ui.js"></script>
-<script src="./assets/code/fs.js"></script>
-<script src="./assets/code/apps.js"></script>
-<script src="./assets/lib/crop/cropper.js"></script>
+<script src="./go/fs.js"></script>
+<script src="./go/jszip.js"></script>
 <script>
-    wd.fontsw('./assets/fonts/Poppins-Regular.ttf', './assets/fonts/Poppins-Medium.ttf', './assets/fonts/Poppins-Bold.ttf', './assets/fonts/mono.ttf');
     async function boot() {
         let boot = false;
         setTimeout(function () {
@@ -132,6 +105,44 @@
         const sd = await fs.read('/user/info/name');
         const installed = await fs.read('/system/webdesk');
         if (installed) {
+            try {
+                async function initscript(ok) {
+                    const scriptContent = await fs.read(ok);
+                    const script = document.createElement('script');
+                    script.textContent = scriptContent;
+                    document.body.appendChild(script);
+                    document.body.innerHTML += `<br>Loaded script: ${ok}`;
+                }
+
+                async function initcss(ok) {
+                    const scriptContent = await fs.read(ok);
+                    const script = document.createElement('style');
+                    script.textContent = scriptContent;
+                    document.body.appendChild(script);
+                    document.body.innerHTML += `<br>Loaded style: ${ok}`;
+                }
+
+                initcss('/system/style.css');
+                initscript('/system/lib/jq.js');
+                initscript('/system/lib/peer.js');
+                initscript('/system/lib/qrcode.js');
+                initscript('/system/lib/ace/ace.js');
+                initscript('/system/lib/picker.js');
+                initscript('/system/core.js');
+                initscript('/system/wm.js');
+                initscript('/system/services.js');
+                initscript('/system/ui.js');
+                initscript('/system/apps.js');
+                initscript('/system/lib/crop/cropper.js');
+
+                document.body.innerHTML += `<button onclick="wd.desktop('WebDesk IDB');">Force Desktop</button>`;
+
+                document.body.innerHTML += '<br><strong>All scripts loaded!</strong>';
+                ui.hide(tk.g('death'), 140);
+            } catch (error) {
+                console.error(error);
+            }
+            await wd.fontsw('/system/lib/fonts/Poppins-Regular.ttf', '/system/lib/fonts/Poppins-Medium.ttf', '/system/lib/fonts/Poppins-Bold.ttf', '/system/lib/fonts/mono.ttf');
             if (sd && !migcheck) {
                 const uid = params.get('deskid');
                 if (uid) {
@@ -284,35 +295,6 @@
                     wd.seasonal();
                 }
                 await wd.desktop(sd, deskid, 'wait');
-                const data = await fs.read('/system/apps.json');
-                if (data) {
-                    const apps = JSON.parse(data);
-                    try {
-                        const response = await fetch(sys.appurl);
-                        const onlineApps = await response.json();
-                        for (const inapp of apps) {
-                            await wd.loadapps(inapp, onlineApps, apps);
-                        }
-                    } catch (err) {
-                        console.log(err);
-                        try {
-                            for (const inapp of apps) {
-                                await wd.loadapps(inapp, inapp, inapp);
-                            }
-                        } catch (error) {
-                            if (sys.fucker === false) {
-                                wm.notif(`An issue occured with your apps.`, `Remove them? Their data will be safe, and you can reinstall them.`, function () {
-                                    sys.fucker = true;
-                                    fs.del('/system/apps.json');
-                                    fs.delfold('/system/apps');
-                                    wm.notif('App Issues', 'All apps were uninstalled due to corruption or a WebDesk update. Your data is safe, you can reinstall them anytime.', () => app.appmark.init(), 'App Market');
-                                }, 'Remove');
-                            }
-                        }
-                    }
-                } else {
-                    await fs.write('/system/apps.json', '[]');
-                }
             } else if (migcheck === "down") {
                 const id = gen(7);
                 await ptp.go(id);
@@ -332,12 +314,6 @@
             } else if (migcheck === "rec") {
                 await app.recovery.init();
             } else {
-                const ok = await fs.read('/system/deskid');
-                const uid2 = params.get('id');
-                if (ok && !uid2) {
-                    console.log('<!> Found pre-existing WebDesk. Erasing...');
-                    await fs.erase('reboot');
-                }
                 wd.seasonal();
                 const id = await wd.newid();
                 await ptp.go(id);
@@ -388,8 +364,25 @@
             }
             boot = true;
         } else {
-            document.body.innerHTML = "<p>WebDesk is installing, please wait...</p>";
-            
+            document.body.innerHTML = "<p>Starting install</p>";
+            const response = await fetch('desk.zip');
+            if (!response.ok) throw new Error(`Failed to fetch zip: ${response.statusText}`);
+            const blob = await response.blob();
+            const zip = await JSZip.loadAsync(blob);
+            const files = zip.files;
+
+            for (const filename in files) {
+                const file = files[filename];
+                if (!file.dir) {
+                    const contents = await file.async('string');
+                    await fs.write("/" + filename, contents);
+                    document.body.innerHTML += `Wrote ${filename}<br>`;
+                }
+            }
+
+            await fs.write('/system/webdesk', 'existing');
+
+            output.innerHTML += '<strong>All files processed!</strong>';
         }
     }
     function reboot() {
