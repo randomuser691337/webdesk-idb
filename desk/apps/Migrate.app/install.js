@@ -17,4 +17,3 @@ app['backup'] = {
         }
     }
 }
-console.log('FAGGOT')
