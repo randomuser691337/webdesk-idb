@@ -11,7 +11,6 @@ app['textedit'] = {
                 return;
             }
         }
-        tk.css('/system/lib/browse.css');
         const win = tk.mbw('TextEdit', '500px', '340px');
         const tabs = tk.c('div', win.main, 'd');
         tabs.style.flex = "0 0 auto";
@@ -51,9 +50,6 @@ app['textedit'] = {
             tk.cb('b4 b6', 'Save', async function () {
                 await save();
             }, win.name);
-            if (path.endsWith('.js')) {
-                editor.session.setMode("ace/mode/javascript");
-            }
         } else {
             tk.cb('b4 b6', 'Save', async function () {
                 const path = await app.files.pick('new', 'Save in new file');
@@ -92,20 +88,6 @@ app['textedit'] = {
                 editor.execCommand('find');
                 ui.dest(menu, 120);
             }, menu);
-            const ok = tk.cb('b1 b2', 'Language', function () {
-                const menu2 = tk.c('div', document.body, 'rightclick');
-                const pos = ok.getBoundingClientRect();
-                const thing = { clientX: pos.left, clientY: pos.top };
-                ui.rightclick(menu2, thing, ok, true);
-                tk.cb('b3 b2', `JavaScript`, function () {
-                    editor.session.setMode("ace/mode/javascript");
-                    ui.dest(menu); ui.dest(menu2);
-                }, menu2);
-                tk.cb('b3 b2', `None`, function () {
-                    editor.session.setMode("ace/mode/text");
-                    ui.dest(menu); ui.dest(menu2);
-                }, menu2);
-            }, menu);
             if (readonly !== true) {
                 tk.cb('b1 b2', 'Replace', function () {
                     editor.execCommand('replace');
@@ -127,7 +109,7 @@ app['textedit'] = {
         function runc() {
             const menu = tk.c('div', document.body, 'cm');
             if (sys.dev === true) {
-                tk.img('./assets/img/icons/hlcrab.png', 'setupi', menu);
+                tk.img('/system/lib/img/icons/hlcrab.png', 'setupi', menu);
                 tk.p(`WAIT!!!`, 'h2', menu);
                 tk.p(`RUN THIS CODE CAREFULLY. It will have full access to your data. It's safer to use an incognito window, if possible. If you were told to copy/paste something here, you're probably getting scammed.`, undefined, menu);
                 tk.cb('b1 b2', 'I understand, run the code', function () {

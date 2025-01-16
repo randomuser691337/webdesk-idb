@@ -117,9 +117,20 @@ app['files'] = {
             items.addEventListener('drop', dropListener);
 
             const contents = await fs.ls(path);
-            contents.items.forEach(item => {
+            for (const item of contents.items) {
                 if (item.type === "folder") {
-                    const folder = tk.cb('flist width', "Folder: " + item.name, () => navto(item.path + "/"), items);
+                    let folder;
+                    if (item.path.includes('.app')) {
+                        const skibidi2 = await fs.ls(item.path + "/");
+                        for (const item3 of skibidi2.items) {
+                            if (item3.name === "install.js") {
+                                folder = tk.cb('flist width', "App: " + item.name, () => navto(item.path + "/"), items);
+                            }
+                        }
+                    } else {
+                        folder = tk.cb('flist width', "Folder: " + item.name, () => navto(item.path + "/"), items);
+                    }
+            
                     let isLongPress = false;
                     let timer;
 
@@ -180,6 +191,7 @@ app['files'] = {
                         const filecontent = await fs.read(item.path);
                         const menu = tk.c('div', document.body, 'cm');
                         const p = tk.ps(item.path, 'bold', menu);
+                        console.log(item.path);
                         p.style.marginBottom = "7px";
 
                         if (item.path.startsWith('/system/') || item.path.startsWith('/user/info/')) {
@@ -380,7 +392,7 @@ app['files'] = {
                         });
                     }
                 }
-            });
+            };
             items2 = items.querySelectorAll('.flist');
         }
 

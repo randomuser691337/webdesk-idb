@@ -322,34 +322,34 @@ var wd = {
                     input.click();
                     controlcenter();
                 }, ok);
-                tk.img('/assets/img/icons/plus.svg', 'contimg', addicon, false);
+                tk.img('/system/lib/img/icons/plus.svg', 'contimg', addicon, false);
                 ui.tooltip(addicon, 'Add file to WebDesk');
                 const sleepicon = tk.cb('conticon', '', function () {
                     app.lockscreen.init();
                     controlcenter();
                 }, ok);
                 ui.tooltip(sleepicon, 'Puts WebDesk to sleep; apps keep running');
-                tk.img('/assets/img/icons/moon.svg', 'contimg', sleepicon, false);
+                tk.img('/system/lib/img/icons/moon.svg', 'contimg', sleepicon, false);
                 const screenicon = tk.cb('conticon', '', function () {
                     wd.fullscreen();
                 }, ok);
                 ui.tooltip(screenicon, 'Fullscreen toggle');
-                tk.img('/assets/img/icons/fs.svg', 'contimg', screenicon, false);
+                tk.img('/system/lib/img/icons/fs.svg', 'contimg', screenicon, false);
                 const notificon = tk.cb('conticon', '', async function () {
                     if (sys.nvol === 0) {
-                        notifimg.src = "/assets/img/icons/notify.svg";
+                        notifimg.src = "/system/lib/img/icons/notify.svg";
                         sys.nvol = 1.0;
                         ui.play(sys.notifsrc);
                         await fs.del('/user/info/silent');
                     } else {
-                        notifimg.src = "/assets/img/icons/silent.svg";
+                        notifimg.src = "/system/lib/img/icons/silent.svg";
                         sys.nvol = 0.0;
                         await fs.write('/user/info/silent', 'true');
                     }
                     el.contb.classList.toggle('silentbtn');
                 }, ok);
-                const notifimg = tk.img('/assets/img/icons/notify.svg', 'contimg', notificon, false);
-                if (sys.nvol === 0) notifimg.src = "/assets/img/icons/silent.svg";
+                const notifimg = tk.img('/system/lib/img/icons/notify.svg', 'contimg', notificon, false);
+                if (sys.nvol === 0) notifimg.src = "/system/lib/img/icons/silent.svg";
                 ui.tooltip(notificon, 'Silent toggle');
             } else {
                 ui.dest(el.cc, 40);
@@ -813,7 +813,7 @@ var wd = {
     },
     wetter: function (setdefault) {
         const main = tk.c('div', document.body, 'cm');
-        tk.img('./assets/img/setup/location.svg', 'setupi', main);
+        tk.img('/system/lib/img/setup/location.svg', 'setupi', main);
         const menu = tk.c('div', main);
         const info = tk.c('div', main, 'hide');
         tk.p('Allow WebDesk to access your state/region for weather processing?', 'bold', menu);
@@ -911,52 +911,42 @@ var wd = {
         });
     },
     fontsw: async function (normal, medium, bold, mono) {
-        const existingStyle = document.getElementById('dynamic-font');
+        const existingStyle = tk.g('dynamic-font');
         if (existingStyle) {
             existingStyle.remove();
         }
 
-        const normalFont = await fs.read(normal);
-        const mediumFont = await fs.read(medium);
-        const boldFont = await fs.read(bold);
-        const monoFont = await fs.read(mono);        
+        const normalURL = await fs.read(normal);
+        const mediumURL = await fs.read(medium);
+        const boldURL = await fs.read(bold);
+        const monoURL = await fs.read(mono);
     
-        const normalBlob = URL.createObjectURL(new Blob([normalFont], { type: 'font/woff2' }));
-        const mediumBlob = URL.createObjectURL(new Blob([mediumFont], { type: 'font/woff2' }));
-        const boldBlob = URL.createObjectURL(new Blob([boldFont], { type: 'font/woff2' }));
-        const monoBlob = URL.createObjectURL(new Blob([monoFont], { type: 'font/woff2' }));
-    
-        // Create a new style element with updated font definitions
         const style = document.createElement('style');
         style.id = 'dynamic-font';
+
         style.innerHTML = `
             @font-face {
                 font-family: 'Font';
-                src: url(${normalBlob});
+                src: url(${normalURL}) format('truetype');
             }
             
             @font-face {
                 font-family: 'FontB';
-                src: url(${boldBlob});
+                src: url(${boldURL}) format('truetype');
             }
             
             @font-face {
                 font-family: 'FontM';
-                src: url(${mediumBlob});
+                src: url(${mediumURL}) format('truetype');
             }
             
             @font-face {
                 font-family: 'MonoS';
-                src: url(${monoBlob});
-            }
+                src: url(${monoURL}) format('truetype');
+            }`;
     
-            /* Update the font-family for body or other elements */
-            body {
-                font-family: 'Font', sans-serif;
-            }
-        `;
         document.head.appendChild(style);
-    },    
+    }, 
     tbcal: async function () {
         let px = 0;
         const ok = await fs.read('/system/standalonepx');

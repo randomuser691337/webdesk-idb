@@ -1,7 +1,7 @@
 app['imgview'] = {
-    runs: true,
+    runs: false,
     name: 'Iris',
-    init: async function (contents) {
+    init: async function (contents, path) {
         const win = tk.mbw('Iris', '400px', 'auto', undefined, undefined, undefined);
         if (contents.includes('data:image')) {
             const container = tk.c('div', win.main);

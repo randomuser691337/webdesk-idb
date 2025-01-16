@@ -79,6 +79,10 @@ app['settings'] = {
         // General pane
         tk.p('General', undefined, generalPane);
         tk.cb('b1 b2 red', 'Erase This WebDesk', () => app.eraseassist.init(), generalPane);
+        tk.cb('b1 b2 red', 'Force Update', async function () {
+            await fs.del('/system/webdesk');
+            wd.reboot();
+        }, generalPane);
         /* tk.cb('b1 b2 red', 'Request Persistence (Stops browser from erasing WebDesk)', async function () {
             const fucker = await fs.persist();
             if (fucker === true) {
@@ -112,7 +116,7 @@ app['settings'] = {
             const opt = await fs.read('/system/info/devmode');
             const pane = tk.c('div', win);
             if (opt !== "true") {
-                tk.img('./assets/img/icons/warn.svg', 'setupi', pane);
+                tk.img('/system/lib/img/icons/warn.svg', 'setupi', pane);
                 tk.p(`Developer Mode lets you install third-party apps, and enables dev tools, but removes security protections.`, undefined, pane);
                 tk.p(`Use caution, there's no support for issues relating to Developer Mode. Disabling Developer Mode will erase WebDesk, but will keep your files.`, undefined, pane);
                 tk.cb(`b1`, 'Cancel', () => ui.dest(win), pane);
@@ -121,7 +125,7 @@ app['settings'] = {
                     await wd.reboot();
                 }, pane);
             } else {
-                tk.img('./assets/img/icons/hlcrab.png', 'setupi', pane);
+                tk.img('/system/lib/img/icons/hlcrab.png', 'setupi', pane);
                 tk.p(`Developer Mode enabled`, 'bold', pane);
                 tk.p(`Disabling it will reset WebDesk, but will keep your files, along with your DeskID and name.`, undefined, pane);
                 tk.cb(`b1`, 'Cancel', () => ui.dest(win), pane);

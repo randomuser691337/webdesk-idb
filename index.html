@@ -6,8 +6,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="theme-color" content="#5a5a5a">
-    <link rel="shortcut icon" href="./assets/img/favicon.png">
-    <link rel="apple-touch-icon" href="./assets/img/noround.png">
+    <link rel="shortcut icon" href="/system/lib/img/favicon.png">
+    <link rel="apple-touch-icon" href="/system/lib/img/noround.png">
     <title>WebDesk (IDB Filesystem)</title>
 </head>
 <script>
@@ -111,7 +111,9 @@
         let boot = false;
         setTimeout(function () {
             if (boot === false) {
-                app.recovery.init();
+                document.body.innerHTML = `<p><strong>WebDesk Net Recovery</strong></p>
+                <p>WebDesk hasn't booted within 10 seconds, so recovery has been initialized. Choose an option below</p>
+                <button onclick="reboot();">Reboot</button><button onclick="fs.del('/system/webdesk');setTimeout(function () {reboot();}, 200);">Reinstall WebDesk (Data is kept)</button>`;
             }
         }, 7000);
         const uid2 = params.get('id');
@@ -123,6 +125,7 @@
             try {
                 await initscript('/system/apps.js');
                 await initcss('/system/style.css');
+                await initcss('/system/lib/browse.css');
                 await initscript('/system/lib/jq.js');
                 await initscript('/system/lib/peer.js');
                 await initscript('/system/lib/qrcode.js');
@@ -135,9 +138,9 @@
                 await initscript('/system/services.js');
                 await initscript('/system/ui.js');
                 await initscript('/system/lib/crop/cropper.js');
+                abt.ver = await fs.read('/system/info/currentver');
 
                 document.body.innerHTML += `<button onclick="wd.desktop('WebDesk IDB');">Force Desktop</button>`;
-
                 document.body.innerHTML += '<br><strong>All scripts loaded! Initializing apps</strong>';
 
                 async function initapps() {
@@ -155,12 +158,11 @@
                 }
 
                 await initapps();
-
+                await wd.fontsw('/system/lib/fonts/Poppins-Regular.wdf', '/system/lib/fonts/Poppins-Medium.wdf', '/system/lib/fonts/Poppins-Bold.wdf', '/system/lib/fonts/mono.wdf');
                 ui.hide(tk.g('death'), 140);
             } catch (error) {
                 console.error(error);
             }
-            // await wd.fontsw('/system/lib/fonts/Poppins-Regular.ttf', '/system/lib/fonts/Poppins-Medium.ttf', '/system/lib/fonts/Poppins-Bold.ttf', '/system/lib/fonts/mono.ttf');
             if (sd && !migcheck) {
                 const uid = params.get('deskid');
                 if (uid) {
@@ -312,6 +314,22 @@
                 } else {
                     wd.seasonal();
                 }
+                try {
+                    const skibidi = await fetch('/go/target.json');
+                    const fucker = await skibidi.text();
+                    const json = await JSON.parse(fucker);
+                    if (json['0'].target !== abt.ver) {
+                        const menu = tk.c('div', document.body, 'cm');
+                        tk.p('Update available', 'bold', menu);
+                        tk.p(abt.ver + " --> " + json['0'].target, 'bold', menu);
+                        tk.cb('b1', 'Maybe later', () => ui.dest(menu), menu);tk.cb('b1', 'Update now', async function () {
+                            await fs.del('/system/webdesk');
+                            reboot();
+                        }, menu);
+                    }
+                } catch (error) {
+                    console.log(error);
+                }
                 await wd.desktop(sd, deskid, 'wait');
             } else if (migcheck === "down") {
                 const id = gen(7);
@@ -382,27 +400,40 @@
             }
             boot = true;
         } else {
-            document.body.innerHTML = "<p>Downloading WebDesk...</p>";
-            const response = await fetch('desk.zip');
-            document.body.innerHTML = "<p>Downloaded, extracting files...</p>";
-            if (!response.ok) throw new Error(`Failed to fetch zip: ${response.statusText}`);
-            const blob = await response.blob();
-            const zip = await JSZip.loadAsync(blob);
-            const files = zip.files;
+            try {
+                document.body.innerHTML = "<p>Downloading WebDesk...</p>";
+                const response = await fetch('desk.zip');
+                document.body.innerHTML = "<p>Downloaded, extracting files...</p>";
+                if (!response.ok) throw new Error(`Failed to fetch zip: ${response.statusText}`);
+                const blob = await response.blob();
+                const zip = await JSZip.loadAsync(blob);
+                const files = zip.files;
 
-            for (const filename in files) {
-                const file = files[filename];
-                if (!file.dir) {
-                    const contents = await file.async('string');
-                    await fs.write("/" + filename, contents);
-                    document.body.innerHTML += `Extracted ${filename}<br>`;
+                for (const filename in files) {
+                    const file = files[filename];
+                    if (!file.dir) {
+                        const contents = await file.async('string');
+                        await fs.write("/" + filename, contents);
+                        document.body.innerHTML += `Extracted ${filename}<br>`;
+                    }
                 }
+
+                await fs.write('/system/webdesk', 'existing');
+
+                if ('serviceWorker' in navigator) {
+                    navigator.serviceWorker.register('/offline.js')
+                        .then(() => document.body.innerHTML += `Offline mode installed<br>`)
+                        .catch((error) => document.body.innerHTML += `OFFLINE MODE FAIL<br>`);
+                }
+
+                document.body.innerHTML += '<strong>Done! Rebooting</strong>';
+                reboot();
+            } catch (error) {
+                document.body.innerHTML = `<p><strong>WebDesk Net Recovery</strong></p>
+                <p>An error occured while attempting install: ${error}</p>
+                <p>Choose an option below</p>
+                <button onclick="reboot();">Retry Install</button>`;
             }
-
-            await fs.write('/system/webdesk', 'existing');
-            document.body.innerHTML += '<strong>Done! Rebooting</strong>';
-            reboot();
-
         }
     }
     function reboot() {

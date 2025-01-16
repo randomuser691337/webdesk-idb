@@ -7,7 +7,7 @@ app['about'] = {
         const main = tk.c('div', win.main, 'abtcont');
         const side = tk.c('div', main, 'abtlogo');
         const info = tk.c('div', main, 'abtinfo');
-        const logo = tk.img('./assets/img/favicon.png', 'abtimg', side);
+        const logo = tk.img('/system/lib/img/favicon.png', 'abtimg', side);
         win.main.style.padding = "0px";
         tk.cb('b4 b2', 'Changes', () => wd.hawktuah(true), side);
         tk.cb('b4 b2', 'Status', async function () {

@@ -419,30 +419,40 @@ var tk = {
         div.appendChild(fuck);
         return fuck;
     },
-    img: function (src, classn, div, draggable) {
+    img: async function (src, classn, div, draggable) {
         const fuck = document.createElement('img');
-        fuck.src = src;
+        div.appendChild(fuck);
+        const data = await fs.read(src);
+        console.log(data);
+        if (data) {
+            if (typeof data === 'string') {
+                if (data.startsWith('<svg')) {
+                    const blob = new Blob([data], { type: 'image/svg+xml' });
+                    fuck.src = URL.createObjectURL(blob);
+                } else if (data.startsWith('data:image')) {
+                    fuck.src = data;
+                } else {
+                    fuck.src = `data:image/png;base64,${data}`;
+                }
+            } else if (data instanceof Uint8Array || data instanceof ArrayBuffer) {
+                const base64String = btoa(String.fromCharCode(...new Uint8Array(data)));
+                fuck.src = `data:image/png;base64,${base64String}`;
+            } else {
+                console.error('Unsupported data type for image rendering.');
+            }
+        } else {
+            fuck.src = src;
+        }
         if (classn) {
             fuck.classList = classn;
         }
         if (draggable === false) {
             fuck.setAttribute('draggable', false);
         }
-        div.appendChild(fuck);
         return fuck;
     },
-    css: function (href) {
-        const existingLink = Array.from(document.getElementsByTagName('link')).find(
-            link => link.rel === 'stylesheet' && link.href === href
-        );
-
-        if (!existingLink) {
-            const link = document.createElement('link');
-            link.rel = 'stylesheet';
-            link.type = 'text/css';
-            link.href = href;
-            document.head.appendChild(link);
-        }
+    css: function (path) {
+        initcss(path);
     },
     cb: function (classn, name, func, ele) {
         const button = document.createElement('button');

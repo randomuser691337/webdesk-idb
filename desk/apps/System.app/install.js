@@ -11,7 +11,7 @@ app['system'] = {
             tk.cb('b4 time', 'what', undefined, title);
             // first menu
             const first = tk.c('div', main, 'setb');
-            tk.img('./assets/img/setup/first.svg', 'setupi', first);
+            tk.img('/system/lib/img/setup/first.svg', 'setupi', first);
             tk.p('In EchoDesk Mode', 'h2', first);
             tk.p(`Use the ID below/scan the QR code to start your WebDesk on another WebDesk. The other WebDesk will have full access to your files.`, undefined, first);
             const split = tk.c('div', first, 'split');
@@ -55,7 +55,7 @@ app['system'] = {
             tk.cb('b4 time', 'what', undefined, title);
             // first menu
             const first = tk.c('div', main, 'setb');
-            tk.img('./assets/img/setup/first.svg', 'setupi', first);
+            tk.img('/system/lib/img/setup/first.svg', 'setupi', first);
             tk.p('Recovery', 'h2', first);
             tk.p(`WebDesk couldn't boot or you wanted to come here, so we threw you here. Here's your options:`, undefined, first);
             tk.cb('b1 b2', `Half-boot (Lets you use WebDesk, but won't fix your problem)`, function () {
@@ -86,12 +86,12 @@ app['system'] = {
             tk.cb('b4 time', 'what', undefined, title);
             // first menu
             const first = tk.c('div', main, 'setb');
-            tk.img('./assets/img/setup/first.svg', 'setupi', first);
+            tk.img('/system/lib/img/setup/first.svg', 'setupi', first);
             function defaultsetup() {
                 tk.p('Welcome to WebDesk!', 'h2', first);
                 tk.cb('b1', `EchoDesk`, function () {
                     const echotemp = tk.c('div', main, 'setb hide');
-                    tk.img('./assets/img/setup/quick.png', 'setupi', echotemp);
+                    tk.img('/system/lib/img/setup/quick.png', 'setupi', echotemp);
                     tk.p('EchoDesk', 'h2', echotemp);
                     tk.p(`Enter the EchoDesk ID, and hit "Okay" to connect to the other WebDesk.`, undefined, echotemp);
                     const input = tk.c('input', echotemp, 'i1');
@@ -133,7 +133,7 @@ app['system'] = {
             }
             // migrate menu
             const transfer = tk.c('div', main, 'setb hide');
-            tk.img('./assets/img/setup/quick.png', 'setupi', transfer);
+            tk.img('/system/lib/img/setup/quick.png', 'setupi', transfer);
             tk.p('Quick Start', 'h2', transfer);
             tk.p('To copy your data, just scan the QR code, or open Data Assistant on the other WebDesk, hit "Migrate", and enter this code:', undefined, transfer);
             const split = tk.c('div', transfer, 'split');
@@ -157,7 +157,7 @@ app['system'] = {
             transfer.id = "quickstartwdsetup";
             // copying menu
             const copy = tk.c('div', main, 'setb hide');
-            tk.img('./assets/img/setup/restore.svg', 'setupi', copy);
+            tk.img('/system/lib/img/setup/restore.svg', 'setupi', copy);
             tk.p('Restoring from other WebDesk', 'h2', copy);
             tk.p('Do not touch the other WebDesk, it could interrupt the copying process.', undefined, copy);
             tk.p(`It's normal for this to take an unreasonable amount of time sometimes.`, undefined, copy);
@@ -166,7 +166,7 @@ app['system'] = {
             copy.id = "quickstartwdgoing";
             // warn menu
             const warn = tk.c('div', main, 'setb hide');
-            tk.img('./assets/img/noround.png', 'setupi', warn);
+            tk.img('/system/lib/img/noround.png', 'setupi', warn);
             tk.p(`WebDesk Online services`, 'h2', warn);
             tk.p('WebDesk makes a DeskID for you. Others can use this ID to send you files or call you.', undefined, warn);
             tk.p(`Keep your WebDesk open when possible. <span class="bold">When WebDesk isn't open, anyone's able to take your DeskID and you can't receive things.</span> You are your own server.`, undefined, warn);
@@ -193,7 +193,7 @@ app['system'] = {
             }, warn);
             // user menu
             const user = tk.c('div', main, 'setb hide');
-            tk.img('./assets/img/setup/user.svg', 'setupi', user);
+            tk.img('/system/lib/img/setup/user.svg', 'setupi', user);
             tk.p('Create User', 'h2', user);
             tk.p(`Data is stored on your device only. WebDesk does not collect any data from you. The name you enter is visible to anyone with your DeskID.`, undefined, user);
             const p = tk.c('div', user, 'list flexthing');
@@ -225,7 +225,7 @@ app['system'] = {
             }, user);
             // summary
             const sum = tk.c('div', main, 'setb hide');
-            tk.img('./assets/img/setup/check.svg', 'setupi', sum);
+            tk.img('/system/lib/img/setup/check.svg', 'setupi', sum);
             tk.p('All done!', 'h2', sum);
             tk.p('Make sure to check Settings for more options.', undefined, sum);
             tk.cb('b1 rb', 'Erase & restart', function () { fs.erase('reboot'); }, sum); tk.cb('b1', 'Finish', function () { wd.reboot(); }, sum);
@@ -249,7 +249,7 @@ app['system'] = {
             tk.cb('b4 time', 'what', undefined, title);
             // migration menu
             let transfer = tk.c('div', main, 'setb');
-            tk.img('./assets/img/setup/quick.png', 'setupi', transfer);
+            tk.img('/system/lib/img/setup/quick.png', 'setupi', transfer);
             tk.p('Migration Assistant', 'h2', transfer);
             let [the, inp, stats] = [undefined];
             if (yeah === "skibidi") {
@@ -299,7 +299,7 @@ app['system'] = {
             transfer.id = "quickstartwdsetup";
             // summary
             const sum = tk.c('div', main, 'setb hide');
-            tk.img('./assets/img/setup/check.svg', 'setupi', sum);
+            tk.img('/system/lib/img/setup/check.svg', 'setupi', sum);
             tk.p('Finishing Up', 'h2', sum);
             tk.p(`Wait for the other WebDesk to finish before hitting "Done" or "Erase".`, undefined, sum);
             tk.p(`It's normal for this to take an unreasonable amount of time sometimes.`, undefined, sum);
