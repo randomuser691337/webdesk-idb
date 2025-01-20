@@ -6,8 +6,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="theme-color" content="#5a5a5a">
-    <link rel="shortcut icon" href="/system/lib/img/favicon.png">
-    <link rel="apple-touch-icon" href="/system/lib/img/noround.png">
+    <link rel="shortcut icon" href="/assets/img/favicon.png">
+    <link rel="apple-touch-icon" href="/assets/img/noround.png">
     <title>WebDesk (IDB Filesystem)</title>
 </head>
 <script>
@@ -168,7 +168,7 @@
                     await ptp.go(id);
                     ui.crtheme('#010101', true);
                     wd.dark('nosave');
-                    app.migrate.init('skibidi');
+                    app.system.migrate.init('skibidi');
                     ui.hide(tk.g('death'), 140);
                     boot = true;
                     return;
@@ -334,7 +334,7 @@
                 ui.crtheme('#010101', true);
                 wd.dark('nosave');
                 await fs.del('/system/migval');
-                app.migrate.init('down');
+                app.system.migrate.init('down');
                 boot = true;
             } else if (migcheck === "echo") {
                 const id = gen(7);
@@ -342,10 +342,10 @@
                 ui.crtheme('#010101', true);
                 wd.dark('nosave');
                 await fs.del('/system/migval');
-                app.echodesk.init();
+                app.system.echodesk.init();
                 boot = true;
             } else if (migcheck === "rec") {
-                await app.recovery.init();
+                await app.system.recovery.init();
             } else {
                 wd.seasonal();
                 const id = await wd.newid();

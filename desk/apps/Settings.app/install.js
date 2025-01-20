@@ -78,7 +78,7 @@ app['settings'] = {
         tk.cb('b1 b2', 'Personalize', () => ui.sw2(mainPane, appearPane), mainPane);
         // General pane
         tk.p('General', undefined, generalPane);
-        tk.cb('b1 b2 red', 'Erase This WebDesk', () => app.eraseassist.init(), generalPane);
+        tk.cb('b1 b2 red', 'Erase This WebDesk', () => app.system.eraseassist.init(), generalPane);
         tk.cb('b1 b2 red', 'Force Update', async function () {
             await fs.del('/system/webdesk');
             wd.reboot();
@@ -340,13 +340,6 @@ app['settings'] = {
             wd.reboot();
         }, 'Okay'), appPane);
         tk.cb('b1', 'Back', () => ui.sw2(appPane, mainPane), appPane);
-    },
-    eraseassist: {
-        runs: false,
-        init: function () {
-            ui.play('./assets/other/error.ogg');
-            wm.wal(`<p>Warning: Erasing this WebDesk will destroy all data stored on it, this cannot be undone!</p>`, () => fs.erase('reboot'), 'Erase');
-        }
     },
     locset: {
         runs: false,

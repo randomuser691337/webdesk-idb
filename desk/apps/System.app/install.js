@@ -303,9 +303,16 @@ app['system'] = {
             tk.p('Finishing Up', 'h2', sum);
             tk.p(`Wait for the other WebDesk to finish before hitting "Done" or "Erase".`, undefined, sum);
             tk.p(`It's normal for this to take an unreasonable amount of time sometimes.`, undefined, sum);
-            tk.cb('b1', 'Erase', function () { app.eraseassist.init(); }, sum);
+            tk.cb('b1', 'Erase', function () { app.system.eraseassist.init(); }, sum);
             tk.cb('b1', 'Done', function () { wd.reboot(); }, sum);
             sum.id = "setupdone";
         }
     },
+    eraseassist: {
+        runs: false,
+        init: function () {
+            ui.play('./assets/other/error.ogg');
+            wm.wal(`<p>Warning: Erasing this WebDesk will destroy all data stored on it along with your WebDesk system, this cannot be undone!</p>`, () => fs.erase('reboot'), 'Erase');
+        }
+   },   
 };
