@@ -15,7 +15,7 @@
     let params = new URLSearchParams(window.location.search);
 
     var abt = {
-        lastmod: "Jan 14, 2025",
+        lastmod: "Jan 19, 2025",
         ver: "0.2.9",
     }
 
@@ -96,15 +96,15 @@
         const script = document.createElement('script');
         script.textContent = scriptContent;
         document.body.appendChild(script);
-        document.body.innerHTML += `<br>Loaded script: ${ok}`;
+        return script;
     }
 
     async function initcss(ok) {
         const scriptContent = await fs.read(ok);
         const script = document.createElement('style');
         script.textContent = scriptContent;
-        document.body.appendChild(script);
-        document.body.innerHTML += `<br>Loaded style: ${ok}`;
+        document.head.appendChild(script);
+        return script;
     }
 
     async function boot() {
@@ -126,6 +126,7 @@
                 await initscript('/system/apps.js');
                 await initcss('/system/style.css');
                 await initcss('/system/lib/browse.css');
+                await initcss('/system/lib/browse.css');
                 await initscript('/system/lib/jq.js');
                 await initscript('/system/lib/peer.js');
                 await initscript('/system/lib/qrcode.js');
@@ -139,10 +140,6 @@
                 await initscript('/system/ui.js');
                 await initscript('/system/lib/crop/cropper.js');
                 abt.ver = await fs.read('/system/info/currentver');
-
-                document.body.innerHTML += `<button onclick="wd.desktop('WebDesk IDB');">Force Desktop</button>`;
-                document.body.innerHTML += '<br><strong>All scripts loaded! Initializing apps</strong>';
-
                 async function initapps() {
                     const contents = await fs.ls('/apps/');
                     for (const item of contents.items) {
@@ -322,7 +319,7 @@
                         const menu = tk.c('div', document.body, 'cm');
                         tk.p('Update available', 'bold', menu);
                         tk.p(abt.ver + " --> " + json['0'].target, 'bold', menu);
-                        tk.cb('b1', 'Maybe later', () => ui.dest(menu), menu);tk.cb('b1', 'Update now', async function () {
+                        tk.cb('b1', 'Maybe later', () => ui.dest(menu), menu); tk.cb('b1', 'Update now', async function () {
                             await fs.del('/system/webdesk');
                             reboot();
                         }, menu);
@@ -412,13 +409,29 @@
                 for (const filename in files) {
                     const file = files[filename];
                     if (!file.dir) {
-                        const contents = await file.async('string');
-                        await fs.write("/" + filename, contents);
+                        if (filename.endsWith('.png')) {
+                            const binaryContents = await file.async('blob');
+                            const reader = new FileReader();
+                            reader.onload = async function (e) {
+                                const base64Data = e.target.result;
+                                await fs.write(`/${filename}`, base64Data);
+                            };
+                            reader.readAsDataURL(binaryContents);
+                        } else {
+                            const contents = await file.async('string');
+                            await fs.write("/" + filename, contents);
+                        }
+
                         document.body.innerHTML += `Extracted ${filename}<br>`;
                     }
                 }
 
                 await fs.write('/system/webdesk', 'existing');
+
+                const skibidi = await fetch('/go/target.json');
+                const fucker = await skibidi.text();
+                const json = await JSON.parse(fucker);
+                fs.write('/system/info/currentver', json['0'].target);
 
                 if ('serviceWorker' in navigator) {
                     navigator.serviceWorker.register('/offline.js')

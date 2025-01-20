@@ -3,7 +3,7 @@ app['about'] = {
     name: 'About',
     init: async function () {
         const win = tk.mbw('About', undefined, 'auto', true, undefined, undefined);
-        tk.css('./assets/lib/abt.css');
+        tk.css('/apps/About.app/abt.css');
         const main = tk.c('div', win.main, 'abtcont');
         const side = tk.c('div', main, 'abtlogo');
         const info = tk.c('div', main, 'abtinfo');

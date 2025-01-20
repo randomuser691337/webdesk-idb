@@ -419,40 +419,49 @@ var tk = {
         div.appendChild(fuck);
         return fuck;
     },
-    img: async function (src, classn, div, draggable) {
+    img: async function (src, classn, div, draggable, directurl) {
         const fuck = document.createElement('img');
         div.appendChild(fuck);
-        const data = await fs.read(src);
-        console.log(data);
-        if (data) {
-            if (typeof data === 'string') {
-                if (data.startsWith('<svg')) {
-                    const blob = new Blob([data], { type: 'image/svg+xml' });
-                    fuck.src = URL.createObjectURL(blob);
-                } else if (data.startsWith('data:image')) {
-                    fuck.src = data;
-                } else {
-                    fuck.src = `data:image/png;base64,${data}`;
-                }
-            } else if (data instanceof Uint8Array || data instanceof ArrayBuffer) {
-                const base64String = btoa(String.fromCharCode(...new Uint8Array(data)));
-                fuck.src = `data:image/png;base64,${base64String}`;
-            } else {
-                console.error('Unsupported data type for image rendering.');
-            }
-        } else {
-            fuck.src = src;
-        }
         if (classn) {
             fuck.classList = classn;
         }
         if (draggable === false) {
             fuck.setAttribute('draggable', false);
         }
+        if (directurl !== true) {
+            try {
+                const data = await fs.read(src);
+                console.log(data);
+                if (data) {
+                    if (typeof data === 'string') {
+                        if (data.startsWith('<svg')) {
+                            const blob = new Blob([data], { type: 'image/svg+xml' });
+                            fuck.src = URL.createObjectURL(blob);
+                        } else if (data.startsWith('data:image')) {
+                            fuck.src = data;
+                        } else {
+                            fuck.src = data;
+                        }
+                    } else if (data instanceof Uint8Array || data instanceof ArrayBuffer) {
+                        const base64String = btoa(String.fromCharCode(...new Uint8Array(data)));
+                        fuck.src = `data:image/png;base64,${base64String}`;
+                    } else {
+                        console.error('Unsupported data type for image rendering.');
+                    }
+                } else {
+                    fuck.src = src;
+                }
+            } catch (error) {
+                console.log(error);
+                fuck.src = src;
+            }
+        } else {
+            fuck.src = src;
+        }
         return fuck;
     },
     css: function (path) {
-        initcss(path);
+        return initcss(path);
     },
     cb: function (classn, name, func, ele) {
         const button = document.createElement('button');

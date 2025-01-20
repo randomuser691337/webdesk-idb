@@ -7,7 +7,7 @@ app['lockscreen'] = {
             el.lock = tk.c('div', document.body, 'lockscreen');
             const clock = tk.c('div', el.lock, 'center');
             ui.show(el.lock, 300);
-            const img = tk.img(`https://openweathermap.org/img/wn/10d@2x.png`, 'locki', clock);
+            const img = tk.img(`https://openweathermap.org/img/wn/10d@2x.png`, 'locki', clock, undefined, true);
             const p = tk.p('--:--', 'time h2', clock);
             clock.style.maxWidth = "200px";
             let ok = false;

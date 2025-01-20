@@ -202,7 +202,7 @@ app['files'] = {
                         }
                         if (!filecontent.includes('data:video')) {
                             if (filecontent.includes('data:')) {
-                                const thing = tk.img(filecontent, 'embed', menu, false);
+                                const thing = await tk.img(filecontent, 'embed', menu, false, true);
                                 thing.style.marginBottom = "4px";
                             } else {
                                 const thing = tk.c('div', menu, 'embed resizeoff');

@@ -260,7 +260,7 @@ p {
     align-items: center;
     justify-content: space-between;
     padding: 9px;
-    padding-left: 11px;
+    padding-left: 8px;
     padding-right: 11px;
     background-color: var(--ui2);
     width: 100%;
@@ -294,8 +294,8 @@ p {
 }
 
 .winbnest {
-    padding-right: 7px;
-    padding-left: 0px !important;
+    padding-right: 4px;
+    padding-left: 3px;
     padding-top: 3px;
     padding-bottom: 2px;
     border: none;
