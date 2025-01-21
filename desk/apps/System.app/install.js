@@ -82,7 +82,7 @@ app['system'] = {
             const bar = tk.c('div', main, 'setupbar');
             const tnav = tk.c('div', bar, 'tnav');
             const title = tk.c('div', bar, 'title');
-            tk.cb('b4', 'Start Over', () => fs.erase('reboot'), tnav);
+            tk.cb('b4', 'Start Over', () => app.settings.eraseassist.init(), tnav);
             tk.cb('b4 time', 'what', undefined, title);
             // first menu
             const first = tk.c('div', main, 'setb');
@@ -228,7 +228,7 @@ app['system'] = {
             tk.img('/system/lib/img/setup/check.svg', 'setupi', sum);
             tk.p('All done!', 'h2', sum);
             tk.p('Make sure to check Settings for more options.', undefined, sum);
-            tk.cb('b1 rb', 'Erase & restart', function () { fs.erase('reboot'); }, sum); tk.cb('b1', 'Finish', function () { wd.reboot(); }, sum);
+            tk.cb('b1 rb', 'Erase & restart', function () { app.settings.eraseassist.init(); }, sum); tk.cb('b1', 'Finish', function () { wd.reboot(); }, sum);
             sum.id = "setupdone";
         }
     },
@@ -303,7 +303,7 @@ app['system'] = {
             tk.p('Finishing Up', 'h2', sum);
             tk.p(`Wait for the other WebDesk to finish before hitting "Done" or "Erase".`, undefined, sum);
             tk.p(`It's normal for this to take an unreasonable amount of time sometimes.`, undefined, sum);
-            tk.cb('b1', 'Erase', function () { app.eraseassist.init(); }, sum);
+            tk.cb('b1', 'Erase', function () { app.settings.eraseassist.init(); }, sum);
             tk.cb('b1', 'Done', function () { wd.reboot(); }, sum);
             sum.id = "setupdone";
         }

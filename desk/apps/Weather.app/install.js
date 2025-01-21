@@ -57,9 +57,8 @@ app['wetter'] = {
                 tnav.style.marginLeft = "6px";
                 userl.style.marginBottom = "6px";
                 tnav.innerText = `${Math.ceil(info.main.temp)}${unitsym}, ${info.weather[0].description}`;
-                const img = tk.img('', 'weatheri', title, undefined, true);
+                const img = tk.img(`https://openweathermap.org/img/wn/${info.weather[0].icon}@2x.png`, 'weatheri', title, undefined, true);
                 title.style.maxHeight = "40px";
-                img.src = `https://openweathermap.org/img/wn/${info.weather[0].icon}@2x.png`;
                 tk.p(`Humidity ${archive = archive === true ? "was" : "is"} ${info.main.humidity}%, and it ${archive = archive === true ? "felt" : "feels"} like ${Math.ceil(info.main.feels_like)}${sys.unitsym}.`, undefined, skibidi);
                 tk.p(`Data from <a href="https://openweathermap.org", target="_blank">OpenWeatherMap.</a>`, 'smtxt', skibidi);
                 tk.cb('b1', 'Settings', () => app.locset.init(), skibidi);

@@ -124,13 +124,32 @@ app['files'] = {
                         const skibidi2 = await fs.ls(item.path + "/");
                         for (const item3 of skibidi2.items) {
                             if (item3.name === "install.js") {
-                                folder = tk.cb('flist width', "App: " + item.name, () => navto(item.path + "/"), items);
+                                folder = tk.cb('flist width', "App: " + item.name, function () {
+                                    const menu = tk.c('div', document.body, 'cm');
+                                    if (sys.dev === true) {
+                                        if (item.path.startsWith('/apps/')) {
+                                            tk.p('Delete this app?', 'bold', menu);
+                                            tk.cb('b1', 'Close', () => ui.dest(menu), menu);
+                                            tk.cb('b1', 'Delete', async function () {
+                                                await fs.delfold(item.path);
+                                                ui.dest(menu);
+                                                ui.slidehide(folder, 100);
+                                            }, menu);
+                                        } else {
+                                            tk.p(`This is a WebDesk app, but it's not in the /Apps/ folder.`, 'bold', menu);
+                                            tk.cb('b1', 'Close', () => ui.dest(menu), menu);
+                                        }
+                                    } else {
+                                        tk.p('Enable Developer Mode to manage this app.', 'bold', menu);
+                                        tk.cb('b1', 'Close', () => ui.dest(menu), menu);
+                                    }
+                                }, items);
                             }
                         }
                     } else {
                         folder = tk.cb('flist width', "Folder: " + item.name, () => navto(item.path + "/"), items);
                     }
-            
+
                     let isLongPress = false;
                     let timer;
 

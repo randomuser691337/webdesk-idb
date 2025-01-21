@@ -848,8 +848,8 @@ p {
     border-radius: var(--rad2);
     width: 100%;
     box-sizing: border-box;
-    margin-bottom: 3px;
-    margin-top: 3px;
+    margin-bottom: 2px;
+    margin-top: 2px;
     box-shadow: var(--optbox);
 }
 
@@ -1360,4 +1360,20 @@ a:active {
 
 .buttonflex button {
     white-space: nowrap;
+}
+
+.darkscreen {
+    position: fixed;
+    left: 0px; right: 0px;
+    bottom: 0px; top: 0px;
+    z-index: 9990;
+    background: rgba(0, 0, 0, 0.65);
+    /* -webkit-backdrop-filter: blur(var(--bl1));
+    backdrop-filter: blur(var(--bl1)); */
+    animation: dark 0.35s;
+}
+
+@keyframes dark {
+    0% {opacity: 0%;}
+    100% {opacity: 100%;}
 }

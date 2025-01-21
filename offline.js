@@ -17,7 +17,7 @@ self.addEventListener('install', (event) => {
             return cache.addAll(CACHE_FILES);
         })
     );
-    console.log('<i> Offline mode is well... online');
+    console.log('<i> Installed!');
 });
 
 self.addEventListener('fetch', (event) => {

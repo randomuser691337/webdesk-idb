@@ -676,7 +676,7 @@ var app = {
         runs: true,
         name: 'Browser (beta)',
         init: async function (path2) {
-            tk.css('./assets/lib/browse.css');
+            tk.css('/system/lib/layout1.css');
             const win = tk.mbw('Browser', '70vw', '74vh');
             const tabs = tk.c('div', win.main, 'tabbar d');
             const btnnest = tk.c('div', tabs, 'tnav');
@@ -787,7 +787,7 @@ var app = {
             wd.win();
         },
         view: async function (path2, title, background) {
-            tk.css('./assets/lib/browse.css');
+            tk.css('/system/lib/layout1.css');
             if (title === undefined) {
                 title = "Embedder";
             } else {

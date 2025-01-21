@@ -710,53 +710,6 @@ var wd = {
         ui.cv('fz2', '15px');
         ui.cv('fz1', '17px');
     },
-    loadapps: async function (inapp, onlineApps, apps) {
-        const onlineApp = onlineApps.find(app => app.appid === inapp.appid);
-        if (onlineApp === undefined) {
-            if (sys.dev === true) {
-                const fucker = await fs.read(inapp.exec);
-                eval(fucker);
-            } else {
-                wm.notif(inapp.name + ` isn't recognized`, `This app has been blocked for safety. For options, hit "Open".`, function () {
-                    const thing = tk.c('div', document.body, 'cm');
-                    tk.p(`This app isn't on the App Market, so it's been blocked.`, undefined, thing);
-                    tk.p(`If you didn't add this, consider erasing WebDesk, as it could be a virus. If you don't want to, just remove it.`, undefined, thing);
-                    tk.cb('b1 b2', 'Remove ' + inapp.name, async function () {
-                        const data = await fs.read('/system/apps.json');
-                        const parsed = JSON.parse(data);
-                        const updatedApps = parsed.filter(item => item.appid !== inapp.appid);
-                        const updatedData = JSON.stringify(updatedApps);
-                        await fs.write('/system/apps.json', updatedData);
-                        await fs.del(inapp.exec);
-                        await wd.reboot();
-                    }, thing);
-                    tk.cb('b1', 'Close', function () {
-                        ui.dest(thing);
-                    }, thing);
-                });
-            }
-        } else {
-            if (onlineApp.ver === inapp.ver && sys.fucker === false) {
-                console.log(`<i> ${inapp.name} is up to date (${inapp.ver} = ${onlineApp.ver})`);
-                const fucker = await fs.read(inapp.exec);
-                if (fucker) {
-                    eval(fucker);
-                } else {
-                    fs.del('/system/apps.json');
-                    fs.delfold('/system/apps');
-                    wm.notif('App Issues', 'All apps were uninstalled due to corruption or an update. Your data is safe, you can reinstall them anytime.', () => app.appmark.init(), 'App Market');
-                    sys.fucker = true;
-                    return;
-                }
-            } else {
-                const remove = apps.filter(item => item.appid !== inapp.appid);
-                const removed = JSON.stringify(remove);
-                fs.write('/system/apps.json', removed);
-                app.appmark.create(onlineApp.path, onlineApp, true);
-                console.log(`<!> ${inapp.name} was updated (${inapp.ver} --> ${onlineApp.ver})`);
-            }
-        }
-    },
     perfmon: function () {
         if (performance.memory) {
             setInterval(() => {
@@ -898,8 +851,7 @@ var wd = {
             await fs.write('/system/info/currentver', abt.ver);
             const win = tk.mbw('Changelog', '300px', '390px', true);
             const div = tk.c('div', win.main, 'embed nest');
-            const response = await fetch('./assets/other/changelog.html');
-            const tuah = await response.text();
+            const tuah = await fs.read('/system/lib/other/changelog.html');
             div.style.height = "100%";
             div.style.maxHeight = "100%";
             div.innerHTML = tuah;

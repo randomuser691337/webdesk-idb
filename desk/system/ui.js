@@ -431,14 +431,11 @@ var tk = {
         if (directurl !== true) {
             try {
                 const data = await fs.read(src);
-                console.log(data);
                 if (data) {
                     if (typeof data === 'string') {
                         if (data.startsWith('<svg')) {
                             const blob = new Blob([data], { type: 'image/svg+xml' });
                             fuck.src = URL.createObjectURL(blob);
-                        } else if (data.startsWith('data:image')) {
-                            fuck.src = data;
                         } else {
                             fuck.src = data;
                         }
@@ -452,6 +449,7 @@ var tk = {
                     fuck.src = src;
                 }
             } catch (error) {
+                console.log(data);
                 console.log(error);
                 fuck.src = src;
             }
@@ -604,7 +602,7 @@ var tk = {
             wd.win(windowDiv, closeButton, minimizeButton, tbn);
         });
         if (sys.mobui !== true) {
-            setTimeout(function () { ui.center(windowDiv); }, 30);
+            setTimeout(function () { ui.center(windowDiv); }, 10);
         }
         return { win: windowDiv, main: contentDiv, tbn, title: titlebarDiv, closebtn: closeButton, winbtns, name: titleDiv, minbtn: minimizeButton };
     }

@@ -11,7 +11,7 @@ app['textedit'] = {
                 return;
             }
         }
-        tk.css('./assets/lib/browse.css');
+        tk.css('/system/lib/layout1.css');
         const win = tk.mbw('TextEdit', '500px', '340px');
         const tabs = tk.c('div', win.main, 'd');
         tabs.style.flex = "0 0 auto";

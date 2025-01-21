@@ -1,6 +1,7 @@
 var wm = {
     wal: function (content, btn1, name, opt) {
         const win = tk.mbw('Alert Window', '300px', 'auto', undefined, undefined, undefined);
+        let dark;
         win.win.querySelector('.tb').remove();
         win.main.className = "d";
         wd.win();
@@ -10,12 +11,30 @@ var wm = {
         const thing2 = document.createElement('div');
         win.main.appendChild(thing);
         win.main.appendChild(thing2);
-        if (opt !== "noclose") {
-            tk.cb('b1', 'Close', function () { ui.dest(win.win, 100); ui.dest(win.tbn, 100); }, thing2);
+        function closewal() { 
+            ui.dest(win.win, 130); ui.dest(win.tbn, 130);
+            if (opt === "urgent") {
+                ui.dest(dark, 130);
+                if (sys.light === true) {
+                    wd.light();
+                }
+            }
         }
+        
+        if (opt === "urgent") {
+            dark = tk.c('div', document.body, 'darkscreen');
+            if (sys.light === true) {
+                wd.dark();
+                sys.light = true;
+            }
+            dark.appendChild(win.win);
+            tk.cb('b1', 'Close', () => closewal(), thing2);
+        } else if (opt !== "noclose") {
+            tk.cb('b1', 'Close', () => closewal(), thing2);
+        } 
 
         if (btn1 !== undefined) {
-            const btn = tk.cb('b1', name, function () { ui.dest(win.win, 100); ui.dest(win.tbn, 100); }, thing2);
+            const btn = tk.cb('b1', name, () => closewal(), thing2);
             btn.addEventListener('click', btn1);
         }
     },
