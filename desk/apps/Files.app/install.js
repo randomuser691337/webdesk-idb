@@ -128,13 +128,17 @@ app['files'] = {
                                     const menu = tk.c('div', document.body, 'cm');
                                     if (sys.dev === true) {
                                         if (item.path.startsWith('/apps/')) {
-                                            tk.p('Delete this app?', 'bold', menu);
-                                            tk.cb('b1', 'Close', () => ui.dest(menu), menu);
-                                            tk.cb('b1', 'Delete', async function () {
+                                            tk.p(item.name, 'bold', menu);
+                                            tk.cb('b1 b2', 'View contents', async function () {
+                                                await navto(item.path + "/");
+                                                ui.dest(menu);
+                                            }, menu);
+                                            tk.cb('b1 b2', 'Delete app', async function () {
                                                 await fs.delfold(item.path);
                                                 ui.dest(menu);
                                                 ui.slidehide(folder, 100);
                                             }, menu);
+                                            tk.cb('b1', 'Close', () => ui.dest(menu), menu);
                                         } else {
                                             tk.p(`This is a WebDesk app, but it's not in the /Apps/ folder.`, 'bold', menu);
                                             tk.cb('b1', 'Close', () => ui.dest(menu), menu);

@@ -21,14 +21,16 @@ app['appmark'] = {
         }
 
         console.log(`<i> Installing ${apploc}`);
-        const check = await fs.read(`/apps/${app.appid}.app/install.js`);
-        const newen = { name: app.name, ver: app.ver, installedon: Date.now(), dev: app.pub, appid: app.appid };
+        const path = '/apps/' + app.appid + '.app/';
+        const check = await fs.read(`${path}install.js`);
+        const newen = { name: app.name, ver: app.ver, installedon: Date.now(), dev: app.pub, appid: app.appid, system: false, lastpath: path, };
         if (check) {
             wm.snack('Already installed');
             return;
         } else {
             const ok = await execute(sys.appurl + apploc);
-            await fs.write('/apps/' + app.appid + '.app/install.js', ok);
+            await fs.write(`${path}install.js`, ok);
+            await fs.write(`${path}manifest.json`, newen);
             if (update === true) {
                 wm.notif(app.name + ' was updated');
             } else {

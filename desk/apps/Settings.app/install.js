@@ -11,6 +11,7 @@ app['settings'] = {
         tk.p('App Management', undefined, appPane);
         const shitStain = tk.c('div', appPane);
         const mainPane = tk.c('div', main.main);
+        main.win.style.maxHeight = "65%";
         // Main pane
         if (sys.guest !== true) {
             const userl = tk.c('div', mainPane, 'list flexthing');
@@ -27,52 +28,53 @@ app['settings'] = {
         tk.cb('b1 b2', 'Manage apps', async function () {
             ui.sw2(mainPane, appPane);
             shitStain.innerHTML = "";
-            const data = await fs.read('/system/apps.json');
-            if (data) {
-                const parsed = JSON.parse(data);
-                parsed.forEach((entry) => {
-                    const notif = tk.c('div', shitStain, 'notif2');
-                    tk.p(entry.name, 'bold', notif);
-                    tk.ps(`${entry.dev} - Ver ${entry.ver}`, undefined, notif);
-                    tk.cb('b3', 'App info', async function () {
-                        const ok = tk.c('div', document.body, 'cm');
-                        tk.p('App Info', 'h2', ok);
-                        const ok2 = tk.c('div', ok, undefined);
-                        tk.p(`<span class="bold">Name</span> ` + entry.name, undefined, ok2);
-                        if (entry.installedon === undefined) {
-                            tk.p(`<span class="bold">Modified</span> Unknown`, undefined, ok2);
-                        } else {
-                            tk.p(`<span class="bold">Modified</span> ` + wd.timec(entry.installedon), undefined, ok2);
+            const contents = await fs.ls('/apps/');
+            for (const item of contents.items) {
+                if (item.type === "folder") {
+                    if (item.path.includes('.app')) {
+                        const skibidi2 = await fs.ls(item.path + "/");
+                        for (const item3 of skibidi2.items) {
+                            if (item3.name === "manifest.json") {
+                                const thing = await fs.read(item3.path);
+                                const entry = JSON.parse(thing);
+                                console.log(entry);
+                                const notif = tk.c('div', shitStain, 'notif2');
+                                tk.p(entry.name, 'bold', notif);
+                                tk.ps(`${entry.dev} - Ver ${entry.ver}`, undefined, notif);
+                                tk.cb('b3', 'App info', async function () {
+                                    const ok = tk.c('div', document.body, 'cm');
+                                    tk.p('App Info', 'h2', ok);
+                                    const ok2 = tk.c('div', ok, undefined);
+                                    tk.p(`<span class="bold">Name</span> ` + entry.name, undefined, ok2);
+                                    if (entry.installedon === undefined) {
+                                        tk.p(`<span class="bold">Modified</span> Unknown`, undefined, ok2);
+                                    } else {
+                                        tk.p(`<span class="bold">Modified</span> ` + wd.timec(entry.installedon), undefined, ok2);
+                                    }
+                                    const appid = tk.p(`<span class="bold">App ID</span> `, undefined, ok2);
+                                    const appids = tk.c('span', appid);
+                                    appids.innerText = entry.appid;
+                                    if (entry.dev === undefined) {
+                                        tk.p(`<span class="bold">Developer</span> ` + 'Unknown', undefined, ok2);
+                                    } else {
+                                        const dev = tk.p(`<span class="bold">Developer</span> `, undefined, ok2);
+                                        const devs = tk.c('span', dev);
+                                        devs.innerText = entry.dev;
+                                    }
+                                    const ver = tk.p(`<span class="bold">Version</span> `, undefined, ok2);
+                                    const vers = tk.c('span', ver);
+                                    vers.innerText = entry.ver;
+                                    tk.cb('b1', 'Close', () => ui.dest(ok), ok)
+                                }, notif);
+                                tk.cb('b3', 'Remove', async function () {
+                                    await fs.delfold(entry.lastpath);
+                                    delete app[entry.appid];
+                                    wm.notif(`${entry.name} removed`, `Reboot to finish removal`, () => wd.reboot(), 'Reboot', true);
+                                }, notif);
+                            }
                         }
-                        const appid = tk.p(`<span class="bold">App ID</span> `, undefined, ok2);
-                        const appids = tk.c('span', appid);
-                        appids.innerText = entry.appid;
-                        if (entry.dev === undefined) {
-                            tk.p(`<span class="bold">Developer</span> ` + 'Unknown', undefined, ok2);
-                        } else {
-                            const dev = tk.p(`<span class="bold">Developer</span> `, undefined, ok2);
-                            const devs = tk.c('span', dev);
-                            devs.innerText = entry.dev;
-                        }
-                        const ver = tk.p(`<span class="bold">Version</span> `, undefined, ok2);
-                        const vers = tk.c('span', ver);
-                        vers.innerText = entry.ver;
-                        tk.cb('b1', 'Close', function () {
-                            ui.dest(ok);
-                        }, ok)
-                    }, notif);
-                    tk.cb('b3', 'Remove', async function () {
-                        const updatedApps = parsed.filter(item => item.appid !== entry.appid);
-                        const updatedData = JSON.stringify(updatedApps);
-                        await fs.write('/system/apps.json', updatedData);
-                        await fs.del(entry.exec);
-                        ui.dest(notif);
-                        wm.notif('Removed ' + entry.name, `It's been removed, but a reboot is needed to clear it completely.`, function () {
-                            wd.reboot();
-                        }, 'Reboot', true);
-                        delete app[entry.appid];
-                    }, notif);
-                });
+                    }
+                }
             }
         }, mainPane);
         tk.cb('b1 b2', 'Personalize', () => ui.sw2(mainPane, appearPane), mainPane);
