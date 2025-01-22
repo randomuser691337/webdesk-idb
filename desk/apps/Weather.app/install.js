@@ -61,7 +61,7 @@ app['wetter'] = {
                 title.style.maxHeight = "40px";
                 tk.p(`Humidity ${archive = archive === true ? "was" : "is"} ${info.main.humidity}%, and it ${archive = archive === true ? "felt" : "feels"} like ${Math.ceil(info.main.feels_like)}${sys.unitsym}.`, undefined, skibidi);
                 tk.p(`Data from <a href="https://openweathermap.org", target="_blank">OpenWeatherMap.</a>`, 'smtxt', skibidi);
-                tk.cb('b1', 'Settings', () => app.locset.init(), skibidi);
+                tk.cb('b1', 'Settings', () => app.settings.locset.init(), skibidi);
                 tk.cb('b1', 'Refresh', function () {
                     refresh(); wm.snack('Refreshed');
                 }, skibidi);

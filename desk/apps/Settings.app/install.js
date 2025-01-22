@@ -262,7 +262,7 @@ app['settings'] = {
         tk.p('WebDesk User', undefined, userPane);
         tk.p(`Keep your WebDesk open when possible. <span class="bold">When WebDesk isn't open, anyone's able to take your DeskID.</span>`, undefined, userPane);
         tk.cb('b1 b2', 'Location', function () {
-            app.locset.init();
+            app.settings.locset.init();
         }, userPane);
         tk.cb('b1 b2', 'Change DeskID', function () {
             const ok = tk.mbw('Change DeskID', '300px', 'auto', true, undefined, undefined);
