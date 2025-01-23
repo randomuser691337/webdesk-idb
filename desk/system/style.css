@@ -207,7 +207,7 @@ p {
     -webkit-backdrop-filter: blur(var(--bl1));
     backdrop-filter: blur(var(--bl1));
     resize: both;
-    animation: winanim 0.3s ease;
+    animation: winanim 0.25s ease;
     min-width: 80px;
     min-height: 50px;
     display: flex;
@@ -436,7 +436,7 @@ p {
     font-size: var(--fz1);
     padding: 5px 8px;
     margin: 1px;
-    transition: 0.04s ease-in-out, background-color 0s !important;
+    transition: 0.033s ease-in-out, background-color 0s !important;
     cursor: pointer;
     border: 2px solid transparent;
     color: var(--font);
@@ -487,7 +487,7 @@ p {
     font-size: var(--fz2);
     border: 2px solid transparent;
     cursor: pointer;
-    transition: 0.04s ease-in-out, background-color 0s !important;
+    transition: 0.033s ease-in-out, background-color 0s !important;
     font-family: 'FontM', Arial;
     margin: 1px;
     box-shadow: var(--optbox);
@@ -527,7 +527,7 @@ p {
     font-size: var(--fz4);
     border: 2px solid transparent;
     cursor: pointer;
-    transition: all 0.04s ease-in-out;
+    transition: all 0.033s ease-in-out;
     margin: 1px;
     font-family: 'FontM', Arial !important;
 }

@@ -872,7 +872,7 @@ var wd = {
         const mediumURL = await fs.read(medium);
         const boldURL = await fs.read(bold);
         const monoURL = await fs.read(mono);
-    
+
         const style = document.createElement('style');
         style.id = 'dynamic-font';
 
@@ -896,9 +896,9 @@ var wd = {
                 font-family: 'MonoS';
                 src: url(${monoURL}) format('truetype');
             }`;
-    
+
         document.head.appendChild(style);
-    }, 
+    },
     tbcal: async function () {
         let px = 0;
         const ok = await fs.read('/system/standalonepx');
@@ -907,7 +907,7 @@ var wd = {
             el.taskbar.style.bottom = px + "px";
         }
         const div = tk.c('div', document.body, 'cm');
-        tk.p('Calibrate app bar', 'bold', div);
+        tk.p('Calibrate app bar (beta)', 'bold', div);
         tk.p('Some devices have UI elements that cut off the app bar.', undefined, div);
         tk.p('This tool lets you adjust the positioning of the app bar.', undefined, div);
         tk.p('Tap the Increase or Decrease buttons to move the app bar.', undefined, div);
@@ -926,6 +926,20 @@ var wd = {
             el.taskbar.style.bottom = px + "px";
             await fs.write('/system/standalonepx', px);
         }, div);
+    },
+    exec: function (code) {
+        const menu = tk.c('div', document.body, 'cm');
+        if (sys.dev === true) {
+            tk.img('/system/lib/img/icons/hlcrab.png', 'setupi', menu);
+            tk.p(`WAIT!!!`, 'h2', menu);
+            tk.p(`RUN THIS CODE CAREFULLY. It will have full access to your data. It's safer to use an incognito window, if possible. If you were told to copy/paste something here, you're probably getting scammed.`, undefined, menu);
+            tk.cb('b1 b2', 'I understand, run the code', function () {
+                ui.dest(menu, 120);
+                eval(code);
+            }, menu);
+        } else {
+            tk.p(`Enable Developer Mode in Settings -> General to run custom code.`, undefined, menu);
+        }
     }
 }
 

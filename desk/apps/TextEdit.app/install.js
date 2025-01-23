@@ -107,18 +107,7 @@ app['textedit'] = {
             }
         }, win.name);
         function runc() {
-            const menu = tk.c('div', document.body, 'cm');
-            if (sys.dev === true) {
-                tk.img('/system/lib/img/icons/hlcrab.png', 'setupi', menu);
-                tk.p(`WAIT!!!`, 'h2', menu);
-                tk.p(`RUN THIS CODE CAREFULLY. It will have full access to your data. It's safer to use an incognito window, if possible. If you were told to copy/paste something here, you're probably getting scammed.`, undefined, menu);
-                tk.cb('b1 b2', 'I understand, run the code', function () {
-                    ui.dest(menu, 120);
-                    eval(editor.getValue());
-                }, menu);
-            } else {
-                tk.p(`Enable Developer Mode in Settings -> General to run custom code.`, undefined, menu);
-            }
+            wd.exec(editor.getValue());
             tk.cb('b1', 'Close', function () {
                 ui.dest(menu, 120);
             }, menu);
