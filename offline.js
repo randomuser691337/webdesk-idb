@@ -1,4 +1,4 @@
-const CACHE_NAME = 'Fuck off (for now)';
+const CACHE_NAME = 'Fuck off (for now) 2';
 const OFFLINE_URL = '/';
 const CACHE_FILES = [
     OFFLINE_URL,
@@ -13,18 +13,7 @@ const CACHE_FILES = [
 self.addEventListener('install', (event) => {
     event.waitUntil(
         caches.open(CACHE_NAME).then((cache) => {
-            return Promise.all(
-                CACHE_FILES.map((file) =>
-                    fetch(file)
-                        .then((response) => {
-                            console.log(`Caching: ${file}`);
-                            return cache.put(file, response);
-                        })
-                        .catch((error) => {
-                            console.error(`Failed to cache ${file}:`, error);
-                        })
-                )
-            );
+            return cache.addAll(CACHE_FILES);
         })
     );
     console.log('<i> Installed!');
@@ -32,10 +21,6 @@ self.addEventListener('install', (event) => {
 
 self.addEventListener('fetch', (event) => {
     event.respondWith(
-        fetch(event.request).catch(() => {
-            if (event.request.mode === 'navigate') {
-                return caches.match(OFFLINE_URL);
-            }
-        })
+        navigator.onLine ? fetch(event.request) : caches.match(event.request)
     );
 });
