@@ -1,32 +1,41 @@
-const CACHE_NAME = 'WebBoot Beta 3';
-const FILES_TO_CACHE = [
+const CACHE_NAME = 'Fuck off (for now)';
+const OFFLINE_URL = '/';
+const CACHE_FILES = [
+    OFFLINE_URL,
     '/go/fs.js',
     '/go/wfs.js',
+    '/go/jszip.js',
     '/index.html',
     '/offline.js',
-    '/go/target.json',
+    '/go/target.json'
 ];
 
 self.addEventListener('install', (event) => {
     event.waitUntil(
-        caches.open(CACHE_NAME).then((cache) => cache.addAll(FILES_TO_CACHE)).then(() => self.skipWaiting())
+        caches.open(CACHE_NAME).then((cache) => {
+            return Promise.all(
+                CACHE_FILES.map((file) =>
+                    fetch(file)
+                        .then((response) => {
+                            console.log(`Caching: ${file}`);
+                            return cache.put(file, response);
+                        })
+                        .catch((error) => {
+                            console.error(`Failed to cache ${file}:`, error);
+                        })
+                )
+            );
+        })
     );
-});
-
-self.addEventListener('activate', (event) => {
-    event.waitUntil(
-        caches.keys().then((cacheNames) =>
-            Promise.all(
-                cacheNames.map((cache) => {
-                    if (cache !== CACHE_NAME) return caches.delete(cache);
-                })
-            )
-        ).then(() => self.clients.claim())
-    );
+    console.log('<i> Installed!');
 });
 
 self.addEventListener('fetch', (event) => {
     event.respondWith(
-        caches.match(event.request).then((cachedResponse) => cachedResponse || fetch(event.request))
+        fetch(event.request).catch(() => {
+            if (event.request.mode === 'navigate') {
+                return caches.match(OFFLINE_URL);
+            }
+        })
     );
 });
