@@ -56,12 +56,25 @@ var ui = {
             }
         }
     },
-    play: function (filename) {
-        const audio = new Audio(filename);
+    play: async function (filename) {
+        const ok = await fs.read(filename);
+        let audio;
+        if (ok) {
+            let correct;
+            if (filename.endsWith('.wav')) {
+                 correct = ok.replace(/^data:application\/octet-stream/, 'data:audio/wav');
+                 audio = new Audio(correct);
+            } else {
+                console.log(`<!> Who are you, who am I to you? (Audio file isn't wav, giving up)`)
+            }
+        } else {
+            audio = new Audio(filename);
+        }
+    
         audio.volume = sys.nvol;
-        audio.play();
+        await audio.play();
         return audio;
-    },
+    },    
     show: function (dr1, anim) {
         if (dr1) {
             if (anim) {

@@ -1,14 +1,13 @@
 
-const CACHE_NAME = 'WebBoot 1';
+const CACHE_NAME = 'WebBoot Beta 1';
 const OFFLINE_URL = '/';
 const CACHE_FILES = [
     OFFLINE_URL,
-    '/go/fs.js',
-    '/go/wfs.js',
-    '/go/jszip.js',
-    '/index.html',
-    '/offline.js',
-    '/go/target.json'
+    'go/fs.js',
+    'go/wfs.js',
+    'index.html',
+    'offline.js',
+    'go/target.json'
 ];
 
 self.addEventListener('install', (event) => {

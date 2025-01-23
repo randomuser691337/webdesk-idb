@@ -30,10 +30,12 @@ self.onmessage = function (event) {
 
 function idbop(operation, params, opt, requestId) {
     if ((typeof params === 'string' && params.includes('//'))) {
-        self.postMessage({ type: 'error', data: `FS request contains //, which screws things up. Your request has been cancelled. Params: ${params}`, requestId });
+        self.postMessage({ type: 'result', data: null, requestId });
+        console.error(`FS request contains //, which screws things up. Data has been returned as null. Params: ${params}`);
         return;
     } else if ((typeof params === 'string' && params.includes('/webdeskmetadata'))) {
-        self.postMessage({ type: 'error', data: `FS request contains /webdeskmetadata, which is used for date-keeping. Your request has been cancelled. Params: ${params}`, requestId });
+        self.postMessage({ type: 'result', data: null, requestId });
+        console.error(`<!> FS request contains /webdeskmetadata, which is used for date-keeping. Data has been returned as null. Params: ${params}`);
         return;
     }
     switch (operation) {

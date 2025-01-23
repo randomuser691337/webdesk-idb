@@ -220,16 +220,16 @@ app['settings'] = {
         const ok4 = tk.c('span', p4);
         ok4.innerText = "Notifications ";
         tk.cb('b7', '1', async function () {
-            wd.notifsrc('/assets/other/notif1.ogg', true);
+            wd.notifsrc('/system/lib/other/notif1.wav', true);
         }, p4);
         tk.cb('b7', '2', async function () {
-            wd.notifsrc('/assets/other/notif2.ogg', true);
+            wd.notifsrc('/system/lib/other/notif2.wav', true);
         }, p4);
         tk.cb('b7', '3', async function () {
-            wd.notifsrc('/assets/other/notif3.ogg', true);
+            wd.notifsrc('/system/lib/other/notif3.wav', true);
         }, p4);
         tk.cb('b7', '4', async function () {
-            wd.notifsrc('/assets/other/notif4.ogg', true);
+            wd.notifsrc('/system/lib/other/notif4.wav', true);
         }, p4);
         tk.cb('b7', 'More', async function () {
             const menu = tk.c('div', document.body, 'cm');
@@ -346,7 +346,7 @@ app['settings'] = {
     eraseassist: {
         runs: false,
         init: function () {
-            ui.play('./assets/other/error.ogg');
+            ui.play('/system/lib/other/error.wav');
             wm.wal(`<p>Warning: Erasing this WebDesk will destroy all data stored on it, including WebDesk itself. This cannot be undone!</p>`, () => fs.erase('reboot'), 'Erase', 'urgent');
         }
     },

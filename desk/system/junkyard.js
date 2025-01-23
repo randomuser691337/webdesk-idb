@@ -58,7 +58,7 @@ function sendf(id) {
     try {
         custf(id, fname, fblob);
         snack('File has been sent.', 2500);
-        play('./assets/other/woosh.ogg');
+        play('./assets/other/woosh.wav');
     } catch (error) {
         console.log('<!> Error while sending file:', error);
         snack('An error occurred while sending your file.', 2500);

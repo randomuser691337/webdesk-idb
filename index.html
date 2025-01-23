@@ -50,7 +50,7 @@
         filter: false,
         nc: false,
         loclast: Date.now(),
-        notifsrc: "/assets/other/notif1.ogg",
+        notifsrc: "/assets/other/notif1.wav",
         lowgfx: false,
         lockscreen: true,
         contained: false,
@@ -409,7 +409,7 @@
                 for (const filename in files) {
                     const file = files[filename];
                     if (!file.dir) {
-                        if (filename.endsWith('.png')) {
+                        if (filename.endsWith('.png') || filename.endsWith('.wav')) {
                             const binaryContents = await file.async('blob');
                             const reader = new FileReader();
                             reader.onload = async function (e) {
