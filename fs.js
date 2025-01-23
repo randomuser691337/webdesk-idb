@@ -1,4 +1,4 @@
-var wfs = new Worker('./go/wfs.js');
+var wfs = new Worker('/wfs.js');
 
 wfs.onmessage = function (event) {
     const { type, data, requestId } = event.data;

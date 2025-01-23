@@ -1,26 +1,40 @@
-const CACHE_NAME = 'Fuck off (for now) 2';
-const OFFLINE_URL = '/';
-const CACHE_FILES = [
-    OFFLINE_URL,
-    '/go/fs.js',
-    '/go/wfs.js',
-    '/go/jszip.js',
-    '/index.html',
-    '/offline.js',
-    '/go/target.json'
-];
+// https://dev.to/naimur/building-offline-ready-webpage-with-service-worker-and-cache-storage-3dbk
 
-self.addEventListener('install', (event) => {
-    event.waitUntil(
-        caches.open(CACHE_NAME).then((cache) => {
-            return cache.addAll(CACHE_FILES);
-        })
-    );
-    console.log('<i> Installed!');
+const cacheName = "skibidi hawk tuah";
+const cacheUrls = ["index.html", "fs.js", "wfs.js", "jszip.js", "target.json"];
+
+self.addEventListener("install", async (event) => {
+    try {
+        const cache = await caches.open(cacheName);
+        await cache.addAll(cacheUrls);
+    } catch (error) {
+        console.error("Service Worker installation failed:", error);
+    }
 });
 
-self.addEventListener('fetch', (event) => {
+self.addEventListener("fetch", (event) => {
     event.respondWith(
-        navigator.onLine ? fetch(event.request) : caches.match(event.request)
+        (async () => {
+            const cache = await caches.open(cacheName);
+
+            try {
+                const cachedResponse = await cache.match(event.request);
+                if (cachedResponse) {
+                    console.log("cachedResponse: ", event.request.url);
+                    return cachedResponse;
+                }
+
+                const fetchResponse = await fetch(event.request);
+                if (fetchResponse) {
+                    console.log("fetchResponse: ", event.request.url);
+                    await cache.put(event.request, fetchResponse.clone());
+                    return fetchResponse;
+                }
+            } catch (error) {
+                console.log("Fetch failed: ", error);
+                const cachedResponse = await cache.match("index.html");
+                return cachedResponse;
+            }
+        })()
     );
 });
