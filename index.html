@@ -426,7 +426,7 @@
 
                 await fs.write('/system/webdesk', 'existing');
 
-                const skibidi = await fetch('/go/target.json');
+                const skibidi = await fetch('/target.json');
                 const fucker = await skibidi.text();
                 const json = await JSON.parse(fucker);
                 fs.write('/system/info/currentver', json['0'].target);

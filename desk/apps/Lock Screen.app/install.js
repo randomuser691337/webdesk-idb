@@ -62,7 +62,7 @@ app['lockscreen'] = {
                     }
                 });
             } else {
-                el.lock.addEventListener('mousedown', async () => {
+                async function unlock() {
                     const { innerHeight: windowHeight } = window;
                     el.lock.style.transition = 'transform 0.3s ease';
                     el.lock.style.transform = `translateY(-${windowHeight}px)`;
@@ -75,6 +75,16 @@ app['lockscreen'] = {
                             resolve();
                         });
                     });
+                }
+                el.lock.addEventListener('mousedown', async () => {
+                    await unlock();
+                });
+                const pos = document.addEventListener('keydown', async function (event) {
+                    if (event.code === "Space") {
+                        event.preventDefault();
+
+                        pos.removeEventListener();
+                    }
                 });
             }
             await updateweather();

@@ -217,6 +217,7 @@ var wd = {
         });
     },
     desktop: function (name, type, waitopt) {
+        const all = tk.c('div', document.body, 'menubardiv hide');
         ui.dest(tk.g('setuparea'));
         ui.cv('menubarheight', '38px');
         let screenWidth;
@@ -270,14 +271,7 @@ var wd = {
         }
         function controlcenter() {
             if (el.cc == undefined) {
-                if (el.sm) {
-                    ui.dest(el.sm, 140);
-                    el.sm = undefined;
-                } else if (el.am) {
-                    ui.dest(el.am, 40);
-                    el.am = undefined;
-                }
-                el.cc = tk.c('div', document.body, 'menubardiv');
+                el.cc = all;
                 const ok = tk.c('div', el.cc, 'embed nest');
                 if (sys.guest === false && sys.echodesk === false) {
                     const yeah = tk.cb('b3 b2', 'Deep Sleep', function () {
@@ -297,6 +291,12 @@ var wd = {
                         tk.g('notif').innerHTML = "";
                         ui.show(tk.g('notif'));
                     }, 200);
+                }, ok);
+                tk.cb('b3 b2', 'Force Update', function () {
+                    if (sys.dev === true) {
+                        fs.del('/system/webdesk');
+                        wd.reboot();
+                    }
                 }, ok);
                 tk.cb('b3 b2', 'Reboot/Reload', function () {
                     wd.reboot();
@@ -351,20 +351,15 @@ var wd = {
                 const notifimg = tk.img('/system/lib/img/icons/notify.svg', 'contimg', notificon, false);
                 if (sys.nvol === 0) notifimg.src = "/system/lib/img/icons/silent.svg";
                 ui.tooltip(notificon, 'Silent toggle');
+                ui.show(el.cc, 0);
             } else {
-                ui.dest(el.cc, 40);
+                ui.hide(el.cc, 0);
                 el.cc = undefined;
             }
         }
         function appmenu() {
             if (el.am == undefined) {
-                if (el.sm) {
-                    ui.dest(el.sm, 140);
-                    el.sm = undefined;
-                } else if (el.cc) {
-                    ui.dest(el.cc, 40);
-                    el.cc = undefined;
-                }
+                el.am = all;
                 el.am = tk.c('div', document.body, 'menubardiv menubarb');
                 el.am.style.left = "7px";
                 el.am.style.width = "170px";
@@ -378,6 +373,38 @@ var wd = {
                 ui.note('Alt+R', rec);
                 const quit = tk.cb('b2', 'Quit', async function () {
                     await wm.close(focused.window, focused.tbn);
+                }, el.am);
+                ui.note('Alt+Q', quit);
+                ui.show(el.am, 0);
+            } else {
+                ui.hide(el.am, 0);
+                el.am = undefined;
+            }
+        }
+        function wmenu() {
+            if (el.wn == undefined) {
+                if (el.wm) {
+                    ui.dest(el.sm, 140);
+                    el.sm = undefined;
+                } else if (el.cc) {
+                    ui.dest(el.cc, 40);
+                    el.cc = undefined;
+                } else if (el.am) {
+                    ui.dest(el.cc, 40);
+                    el.cc = undefined;
+                }
+                el.wn = tk.c('div', document.body, 'menubardiv menubarb');
+                el.wn.style.left = "7px";
+                el.wn.style.width = "170px";
+                tk.cb('b2', 'About WebDesk', async function () {
+                    await app.about.init();
+                }, el.am);
+                ui.line(el.wn);
+                tk.cb('b2', 'Settings', async function () {
+                    app.settings.init();
+                }, el.am);
+                tk.cb('b2', 'App Market', async function () {
+                    await app.appmark.init();
                 }, el.am);
                 ui.note('Alt+Q', quit);
             } else {
@@ -397,6 +424,7 @@ var wd = {
             el.menubar = tk.c('div', document.body, 'menubar menubarb flexthing');
             const left = tk.c('div', el.menubar, 'tnav');
             const right = tk.c('div', el.menubar, 'title nogrowth');
+            el.menubarbtn = tk.cb('webdesksquare', '', () => wmenu(), left);
             el.menubarbtn = tk.cb('bold', 'Desktop', () => appmenu(), left);
             el.contb = tk.cb('time', '--:--', () => controlcenter(), right);
             const tasknest = tk.c('div', el.taskbar, 'tasknest');

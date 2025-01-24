@@ -891,8 +891,21 @@ p {
     border: 1px solid var(--bc);
 }
 
+.webdesksquare {
+    border-radius: 6px !important;
+    background-color: var(--font) !important;
+    width: 20px;
+    height: 20px;
+    border: none;
+}
+
+.webdesksquare:hover {
+    background-color: var(--font) !important;
+}
+
 .menubardiv button:hover {
     background-color: rgba(var(--acc), 0.45);
+    color: #fff !important;
 }
 
 .menubar {
@@ -907,14 +920,13 @@ p {
     box-shadow: rgba(0, 0, 0, 0.12) 0px 0px 37.5px 7.5px;
     z-index: 1000;
     font-size: var(--fz2);
-    border-bottom: 1px solid var(--bc);
     animation: menubar 0.4s ease;
 }
 
 .menubar button:hover {
     background-color: rgb(0, 0, 0, 0) !important;
 }
-∏
+
 .nogrowth {
     align-items: stretch;
 }

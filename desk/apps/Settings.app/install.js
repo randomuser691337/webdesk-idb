@@ -80,8 +80,7 @@ app['settings'] = {
         tk.cb('b1 b2', 'Personalize', () => ui.sw2(mainPane, appearPane), mainPane);
         // General pane
         tk.p('General', undefined, generalPane);
-        tk.cb('b1 b2 red', 'Erase This WebDesk', () => app.settings.eraseassist.init(), generalPane);
-        tk.cb('b1 b2 red', 'Force Update', async function () {
+        tk.cb('b1 b2 red', 'Reinstall WebDesk (keep data)', async function () {
             await fs.del('/system/webdesk');
             wd.reboot();
         }, generalPane);
@@ -140,6 +139,7 @@ app['settings'] = {
                 }, pane);
             }
         }, generalPane);
+        tk.cb('b1 b2 red', 'Erase...', () => app.settings.eraseassist.init(), generalPane);
         const pgfx = tk.c('div', generalPane, 'list');
         const okgfx = tk.c('span', pgfx);
         okgfx.innerText = "Graphics ";
