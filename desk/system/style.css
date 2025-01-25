@@ -10,6 +10,7 @@
     --ui3: #ededed;
     --bc: rgb(204, 204, 204, 0.5);
     --font: #000;
+    --dimfont: #444;
     --bl1: 10px;
     --bl2: 6px;
     --rad1: 16px;
@@ -892,11 +893,12 @@ p {
 }
 
 .webdesksquare {
-    border-radius: 6px !important;
+    border-radius: 5px !important;
     background-color: var(--font) !important;
-    width: 20px;
-    height: 20px;
+    width: 18px;
+    height: 18px;
     border: none;
+    box-shadow: var(--optbox);
 }
 
 .webdesksquare:hover {
@@ -905,7 +907,6 @@ p {
 
 .menubardiv button:hover {
     background-color: rgba(var(--acc), 0.45);
-    color: #fff !important;
 }
 
 .menubar {
@@ -942,14 +943,15 @@ p {
 }
 
 .menubarb button {
-    padding: 3px 5px;
+    padding: 2.5px 4px;
     border-radius: var(--rad3);
     border: none;
     background-color: rgb(0, 0, 0, 0);
     font-size: var(--fz2);
     border: none !important;
-    margin: 0px;
+    margin: 0px !important;
     flex-shrink: 0;
+    text-align: left;
 }
 
 .menubarb button:hover {
@@ -1079,15 +1081,17 @@ p {
 
 .line {
     width: 100%;
-    padding-left: 8%;
-    padding-right: 8%;
+    padding-left: 2%;
+    padding-right: 2%;
     box-sizing: border-box;
     margin: 0px;
+    padding-top: 3px;
+    padding-bottom: 3px;
     border-radius: 5px;
 }
 
 .lineinside {
-    background-color: var(--bc);
+    background-color: var(--dimfont);
     width: 100%;
     box-sizing: border-box;
     padding: 0px; 

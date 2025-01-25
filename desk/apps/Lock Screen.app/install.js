@@ -62,29 +62,30 @@ app['lockscreen'] = {
                     }
                 });
             } else {
-                async function unlock() {
-                    const { innerHeight: windowHeight } = window;
-                    el.lock.style.transition = 'transform 0.3s ease';
-                    el.lock.style.transform = `translateY(-${windowHeight}px)`;
-                    await new Promise(resolve => {
-                        el.lock.addEventListener('transitionend', function onTransitionEnd() {
-                            el.lock.removeEventListener('transitionend', onTransitionEnd);
-                            clearInterval(interval);
-                            el.lock.remove();
-                            el.lock = undefined;
-                            resolve();
-                        });
-                    });
-                }
-                el.lock.addEventListener('mousedown', async () => {
-                    await unlock();
+                const what = el.lock.addEventListener('mousedown', async () => {
+                    await unlock(what);
                 });
                 const pos = document.addEventListener('keydown', async function (event) {
-                    if (event.code === "Space") {
+                    if (event.key === "Space") {
                         event.preventDefault();
-
-                        pos.removeEventListener();
+                        await unlock(pos);
                     }
+                });
+            }
+
+            async function unlock(listen) {
+                const { innerHeight: windowHeight } = window;
+                el.lock.style.transition = 'transform 0.3s ease';
+                el.lock.style.transform = `translateY(-${windowHeight}px)`;
+                await new Promise(resolve => {
+                    el.lock.addEventListener('transitionend', function onTransitionEnd() {
+                        el.lock.removeEventListener('transitionend', onTransitionEnd);
+                        clearInterval(interval);
+                        el.lock.remove();
+                        el.lock = undefined;
+                        resolve();
+                        listen.removeEventListener();
+                    });
                 });
             }
             await updateweather();
