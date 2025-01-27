@@ -316,7 +316,7 @@
                     if (json['0'].target !== abt.ver) {
                         const menu = tk.c('div', document.body, 'cm');
                         tk.p('Update available', 'bold', menu);
-                        tk.p(abt.ver + " --> " + json['0'].target, 'bold', menu);
+                        tk.p(abt.ver + " to " + json['0'].target, 'bold', menu);
                         tk.cb('b1', 'Maybe later', () => ui.dest(menu), menu); tk.cb('b1', 'Update now', async function () {
                             await fs.del('/system/webdesk');
                             reboot();
@@ -398,7 +398,24 @@
             try {
                 document.body.innerHTML = "<p>Downloading WebDesk...</p>";
                 const response = await fetch('desk.zip');
-                document.body.innerHTML = "<p>Downloaded, extracting files...</p>";
+                /*
+                Service workers auto update, what the fuck was I thinking
+                const test = await fs.read('/system/core.js');
+                if (test) {
+                    navigator.serviceWorker.getRegistrations().then(registrations => {
+                        if (!Array.isArray(registrations) && registrations.length === 0) {
+                            for (let registration of registrations) {
+                                document.body.innerHTML += "<p>Removing old service worker...</p>";
+                                registration.unregister();
+                                if (registration.active) {
+                                    registration.active.postMessage({ type: 'stop' });
+                                    return;
+                                }
+                            }
+                        }
+                    });
+                } */
+                document.body.innerHTML += "<p>Downloaded, extracting files...</p>";
                 if (!response.ok) throw new Error(`Failed to fetch zip: ${response.statusText}`);
                 const blob = await response.blob();
                 const zip = await JSZip.loadAsync(blob);
@@ -430,6 +447,7 @@
                 const fucker = await skibidi.text();
                 const json = await JSON.parse(fucker);
                 fs.write('/system/info/currentver', json['0'].target);
+                fs.write('/system/info/currentveredit', json['0'].lastmod);
 
                 /* await fetch('/go/fs.js').then(response => {
                     if (!response.ok) {
@@ -462,10 +480,11 @@
                     reboot();
                 }
             } catch (error) {
-                document.body.innerHTML = `<p><strong>WebDesk Net Recovery</strong></p>
+                document.body.innerHTML = `
+                <p><strong>WebDesk Net Recovery</strong></p>
                 <p>An error occured while attempting install: ${error}</p>
                 <p>Choose an option below</p>
-                <button onclick="reboot();">Retry Install</button>`;
+                <button onclick="reboot();">Reboot</button><button onclick="fs.del('/system/webdesk/');reboot();">Retry Install</button>`;
             }
         }
     }

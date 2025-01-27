@@ -74,7 +74,6 @@ app['files'] = {
                 const pos = ok.getBoundingClientRect();
                 const thing = { clientX: pos.left, clientY: pos.top };
                 ui.rightclick(menu, thing, ok, true);
-                tk.p(`Creating in ` + tempPath, 'smtxt', menu);
                 const input = tk.c('input', menu, 'i1');
                 input.placeholder = "Name your thing, hit a button";
                 tk.cb('b3 b2', 'New text file', function () {
@@ -417,6 +416,13 @@ app['files'] = {
                 }
             };
             items2 = items.querySelectorAll('.flist');
+            if (items2.length === 1 &&
+                items2[0].style.display === 'none' &&
+                items2[0].innerText.trim() === 'File: .folder'
+            ) {
+                tk.p('No files here yet', 'bold', items);
+                tk.p('Drag files over from another Files window, or hit the + in the titlebar', undefined, items);
+            }
         }
 
         navto('/user/files/');

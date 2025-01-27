@@ -50,7 +50,7 @@ app['lockscreen'] = {
                             await fs.del('/system/eepysleepy');
                             sys.resume();
                             clearInterval(interval);
-                            el.lock.remove();
+                            ui.dest(el.lock, 140);
                             el.lock = undefined;
                             ui.show(tk.g('contain'), 0);
                         }, menu);
@@ -65,12 +65,16 @@ app['lockscreen'] = {
                 const what = el.lock.addEventListener('mousedown', async () => {
                     await unlock(what);
                 });
-                const pos = document.addEventListener('keydown', async function (event) {
-                    if (event.key === "Space") {
+
+                const listener = async function (event) {
+                    if (event.key === " ") {
                         event.preventDefault();
-                        await unlock(pos);
+                        await unlock(listener);
+                        document.removeEventListener('keydown', listener);
                     }
-                });
+                };
+                
+                document.addEventListener('keydown', listener);                
             }
 
             async function unlock(listen) {

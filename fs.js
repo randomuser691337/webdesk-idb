@@ -49,6 +49,14 @@ var fs = {
         return this.askwfs('delete', path);
     },
     erase: function (path) {
+        navigator.serviceWorker.getRegistrations().then(registrations => {
+            for (let registration of registrations) {
+                registration.unregister();
+                if (registration.active) {
+                    registration.active.postMessage({ type: 'stop' });
+                }
+            }
+        });
         return this.askwfs('erase', path);
     },
     ls: function (path) {
@@ -59,6 +67,12 @@ var fs = {
     },
     delfold: function (path) {
         return this.askwfs('delfold', path);
+    },
+    copyfold: async function (oldplace, newplace) {
+        const ok = await fs.ls(oldplace);
+        for (const path of ok.path) { 
+            console.log(path);
+        }
     },
     persist: function () {
         return this.askwfs('persist');

@@ -899,6 +899,8 @@ p {
     height: 18px;
     border: none;
     box-shadow: var(--optbox);
+    margin-right: 10px;
+    margin-left: 10px;
 }
 
 .webdesksquare:hover {

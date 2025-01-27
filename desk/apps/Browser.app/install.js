@@ -3,7 +3,7 @@ app['browser'] = {
     name: 'Browser',
     init: async function (path2) {
         tk.css('/system/lib/layout1.css');
-        const win = tk.mbw('Browser', '70vw', '74vh');
+        const win = tk.mbw('Browser', '80vw', '80vh');
         const tabs = tk.c('div', win.main, 'tabbar d');
         const btnnest = tk.c('div', tabs, 'tnav');
         const okiedokie = tk.c('div', tabs, 'browsertitle');
@@ -89,7 +89,7 @@ app['browser'] = {
             }
         }, searchbtns);
         searchInput.placeholder = "Enter URL";
-        tk.cb('b4 b6', 'Go!', function () {
+        function load() {
             if (searchInput.value.includes('https://')) {
                 currentTab.src = searchInput.value;
             } else {
@@ -101,7 +101,28 @@ app['browser'] = {
             } else if (searchInput.value.includes(window.origin)) {
                 app.ach.unlock('Webception!', `Just know that the other WebDesk will probably end up erased.`);
             }
+        }
+
+        const ok = tk.cb('b4', '+', function () { 
+            const menu = tk.c('div', document.body, 'rightclick');
+            const pos = ok.getBoundingClientRect();
+            const thing2 = { clientX: pos.left, clientY: pos.top };
+            ui.rightclick(menu, thing2, ok, true);
+            tk.cb('b3 b2', 'Install As Web App', function () {
+                app.browser.view(currentTab.src);
+            }, menu);
+            tk.cb('b3 b2', 'Go!', () => load(), menu);
         }, okiedokie);
+
+        const listener = async function (event) {
+            if (event.key === "Enter") {
+                event.preventDefault();
+                load();
+                document.removeEventListener('keydown', listener);
+            }
+        };
+
+        document.addEventListener('keydown', listener);
 
         setTimeout(function () {
             if (typeof path2 === "string") {

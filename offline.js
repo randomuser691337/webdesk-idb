@@ -2,6 +2,7 @@
 
 const cacheName = "skibidi hawk tuah";
 const cacheUrls = ["index.html", "fs.js", "wfs.js", "jszip.js", "target.json"];
+const ver = "0.0.1";
 
 self.addEventListener("install", async (event) => {
     try {
@@ -12,7 +13,22 @@ self.addEventListener("install", async (event) => {
     }
 });
 
+self.addEventListener("message", (event) => {
+    if (event.data && event.data.type === "stop") {
+        console.log("<i> Goodbye, cruel world");
+        self.registration.unregister().then(() => {
+            return self.clients.matchAll().then(clients => {
+                clients.forEach(client => client.navigate(client.url));
+            });
+        });
+    } else if (event.data && event.data.type === "hello") {
+        console.log(ver);
+        event.source.postMessage({ type: ver });
+    }
+});
+
 if (navigator.onLine === false) {
+    console.log(`<i> Worker ${ver} is initializing... (active)`);
     self.addEventListener("fetch", (event) => {
         event.respondWith(
             (async () => {
@@ -39,5 +55,6 @@ if (navigator.onLine === false) {
             })()
         );
     });
-
+} else {
+    console.log(`<i> Worker ${ver} is initializing... (dormant)`);
 }
