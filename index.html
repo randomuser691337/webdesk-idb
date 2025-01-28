@@ -315,9 +315,10 @@
                     const json = await JSON.parse(fucker);
                     if (json['0'].target !== abt.ver) {
                         const menu = tk.c('div', document.body, 'cm');
+                        tk.img('/system/lib/img/icons/update.svg', 'setupi', menu);
                         tk.p('Update available', 'bold', menu);
                         tk.p(abt.ver + " to " + json['0'].target, 'bold', menu);
-                        tk.cb('b1', 'Maybe later', () => ui.dest(menu), menu); tk.cb('b1', 'Update now', async function () {
+                        tk.cb('b1', 'Later', () => ui.dest(menu), menu); tk.cb('b1', 'Update', async function () {
                             await fs.del('/system/webdesk');
                             reboot();
                         }, menu);
