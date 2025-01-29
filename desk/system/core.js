@@ -1,5 +1,6 @@
-// WebDesk 0.2.0
-// Based on Rebuild 7 (wtf)
+// WebDesk Core
+// Built by red40lover420 - https://meower.xyz
+// Don't remove this message
 (function () {
     const minimumVersions = { Chrome: 100, Firefox: 100, Safari: 15, Edge: 100, "Internet Explorer": 11 };
     const ua = navigator.userAgent;
@@ -439,7 +440,7 @@ var wd = {
             el.menubar = tk.c('div', document.body, 'menubar menubarb flexthing');
             const left = tk.c('div', el.menubar, 'tnav');
             const right = tk.c('div', el.menubar, 'title nogrowth');
-            el.menubarbtn = tk.cb('webdesksquare', '', function () {
+            el.menubarbtn = tk.cb('webdesksquare2', '', function () {
                 if (el.wn) {
                     ui.hide(el.wn, 0);
                     el.wn = undefined;

@@ -892,7 +892,7 @@ p {
     border: 1px solid var(--bc);
 }
 
-.webdesksquare {
+.webdesksquare2 {
     border-radius: 5px !important;
     background-color: var(--font) !important;
     width: 18px;
@@ -903,8 +903,9 @@ p {
     margin-left: 10px;
 }
 
-.webdesksquare:hover {
+.webdesksquare2:hover {
     background-color: var(--font) !important;
+    opacity: 100% !important;
 }
 
 .menubardiv button:hover {
@@ -928,6 +929,10 @@ p {
 
 .menubar button:hover {
     background-color: rgb(0, 0, 0, 0) !important;
+}
+
+.menubar .webdesksquare2:hover {
+    background-color: var(--font) !important;
 }
 
 .nogrowth {
@@ -1386,7 +1391,7 @@ a:active {
     left: 0px; right: 0px;
     bottom: 0px; top: 0px;
     z-index: 9990;
-    background: rgba(0, 0, 0, 0.65);
+    background: rgba(0, 0, 0, 0.5);
     /* -webkit-backdrop-filter: blur(var(--bl1));
     backdrop-filter: blur(var(--bl1)); */
     animation: dark 0.35s;

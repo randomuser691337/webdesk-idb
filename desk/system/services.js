@@ -114,7 +114,7 @@ var ptp = {
                                     .then((stream) => {
                                         call.answer(stream);
                                         call.on('stream', (remoteStream) => {
-                                            app.webcall.answer(remoteStream, call, parsedData.response, stream);
+                                            app.webcomm.webcall.answer(remoteStream, call, parsedData.response, stream);
                                         });
                                     })
                                     .catch((err) => {
@@ -253,15 +253,15 @@ async function handleData(conn, data) {
                             el.webchat = undefined;
                             el.currentid = data.id;
                             custf(data.id, 'Message-WebKey', `End chat with ${data.id}`);
-                            await app.webchat.init(`${data.id}`, `${data.file}`, `${data.uname}`);
+                            await app.webcomm.webchat.init(`${data.id}`, `${data.file}`, `${data.uname}`);
                         });
                     } else {
                         el.currentid = data.id;
-                        await app.webchat.init(`${data.id}`, `${data.file}`, `${data.uname}`);
+                        await app.webcomm.webchat.init(`${data.id}`, `${data.file}`, `${data.uname}`);
                     }
                 }, 'Open');
             } else {
-                await app.webchat.init(`${data.id}`, `${data.file}`, `${data.uname}`);
+                await app.webcomm.webchat.init(`${data.id}`, `${data.file}`, `${data.uname}`);
             }
         } else if (data === "Name and FUCKING address please") {
             conn.send(sys.user);

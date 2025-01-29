@@ -53,7 +53,7 @@ app['appmark'] = {
                     tk.p(`<span class="bold">${app2.name}</span> by ${app2.pub}`, undefined, notif);
                     tk.line(notif);
                     tk.p(app2.info, undefined, notif);
-                    tk.cb('b3', 'App ID', () => wm.notif(`${app2.name}'s App ID:`, app2.appid, () => ui.copy(app2.appid), 'Copy', true), notif); tk.cb('b3', 'Install', () => app.appmark.create(app2.path, app2), notif)
+                    tk.cb('b3', 'App ID', () => wm.notif(`${app2.name}'s App ID:`, app2.appid, () => ui.copy(app2.appid), 'Copy', true), notif); tk.cb('b3', 'Install', () => app.appmark.create(app2.path, app2), notif);
                 });
             } catch (error) {
                 console.log(error);

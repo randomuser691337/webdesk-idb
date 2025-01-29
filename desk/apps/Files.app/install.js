@@ -213,7 +213,6 @@ app['files'] = {
                         const filecontent = await fs.read(item.path);
                         const menu = tk.c('div', document.body, 'cm');
                         const p = tk.ps(item.path, 'bold', menu);
-                        console.log(item.path);
                         p.style.marginBottom = "7px";
 
                         if (item.path.startsWith('/system/') || item.path.startsWith('/user/info/')) {
@@ -262,7 +261,7 @@ app['files'] = {
                             const btnmenu2 = tk.c('div', menu2, 'brick-layout');
                             btnmenu.style.marginBottom = "4px";
                             tk.cb('b3', 'Iris Media Viewer', function () {
-                                app.imgview.init(filecontent);
+                                app.imgview.init(filecontent, item.path);
                                 ui.dest(menu2);
                             }, btnmenu2);
                             tk.cb('b3', 'Text Editor', function () {

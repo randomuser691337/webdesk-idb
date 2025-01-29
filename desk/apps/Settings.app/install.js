@@ -11,7 +11,9 @@ app['settings'] = {
         tk.p('App Management', undefined, appPane);
         const shitStain = tk.c('div', appPane);
         const mainPane = tk.c('div', main.main);
-        main.win.style.maxHeight = "65%";
+        if (sys.mobui === false) {
+            main.win.style.maxHeight = "65%";
+        }
         // Main pane
         if (sys.guest !== true) {
             const userl = tk.c('div', mainPane, 'list flexthing');
@@ -68,6 +70,7 @@ app['settings'] = {
                                 }, notif);
                                 tk.cb('b3', 'Remove', async function () {
                                     await fs.delfold(entry.lastpath);
+                                    ui.slidehide(notif);
                                     delete app[entry.appid];
                                     wm.notif(`${entry.name} removed`, `Reboot to finish removal`, () => wd.reboot(), 'Reboot', true);
                                 }, notif);

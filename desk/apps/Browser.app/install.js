@@ -103,15 +103,32 @@ app['browser'] = {
             }
         }
 
-        const ok = tk.cb('b4', '+', function () { 
+        const ok = tk.cb('b4 b6', '+', function () {
             const menu = tk.c('div', document.body, 'rightclick');
             const pos = ok.getBoundingClientRect();
             const thing2 = { clientX: pos.left, clientY: pos.top };
             ui.rightclick(menu, thing2, ok, true);
-            tk.cb('b3 b2', 'Install As Web App', function () {
+            tk.cb('b3 b2', 'Install As Web App', async function () {
+                const id = gen(12);
+                const path = '/apps/' + id + '.app/';
+                const filt = currentTab.src.replace("https://", "").replace("http://", "");
+                const name = ui.truncater(filt, 18);
+                const newen = { name: name, ver: 1.0, installedon: Date.now(), dev: 'Browser', appid: id, system: false, lastpath: path, };
+                await fs.write(`${path}install.js`, `app['${id}'] = {
+     runs: true,
+     name: '${name}',
+     init: function () {
+          app.browser.view('${currentTab.src}', '${name}');
+     }
+}`);
+                await fs.write(`${path}manifest.json`, newen);
+                wm.notif(name + ' was installed');
                 app.browser.view(currentTab.src);
+                ui.dest(menu, 0);
             }, menu);
-            tk.cb('b3 b2', 'Go!', () => load(), menu);
+            tk.cb('b3 b2', 'Go!', function () {
+                load(); ui.dest(menu, 0);
+            }, menu);
         }, okiedokie);
 
         const listener = async function (event) {

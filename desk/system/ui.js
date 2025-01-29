@@ -392,6 +392,9 @@ var ui = {
         div.appendChild(fuck);
         return fuck;
     },
+    darken: function () {
+        return tk.c('div', document.body, 'darkscreen');
+    },
 }
 var tk = {
     c: function (type, ele, classn) {
@@ -610,13 +613,13 @@ var tk = {
         windowDiv.appendChild(contentDiv);
         document.body.appendChild(windowDiv);
         wd.win();
-        wd.win(windowDiv, closeButton, minimizeButton, tbn);
+        wd.win(windowDiv, closeButtonNest, minimizeButtonNest, tbn);
         windowDiv.addEventListener('mousedown', function () {
-            wd.win(windowDiv, closeButton, minimizeButton, tbn);
+            wd.win(windowDiv, closeButtonNest, minimizeButtonNest, tbn);
         });
         if (sys.mobui !== true) {
             setTimeout(function () { ui.center(windowDiv); }, 10);
         }
-        return { win: windowDiv, main: contentDiv, tbn, title: titlebarDiv, closebtn: closeButton, winbtns, name: titleDiv, minbtn: minimizeButton };
+        return { win: windowDiv, main: contentDiv, tbn, title: titlebarDiv, closebtn: closeButtonNest, winbtns, name: titleDiv, minbtn: minimizeButtonNest };
     }
 }

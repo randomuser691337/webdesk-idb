@@ -20,7 +20,6 @@
     padding: 10px;
     max-width: calc(100% - 71px);
     text-align: center !important;
-    border-left: 1px solid var(--bc);
 }
 
 .progress-bar {

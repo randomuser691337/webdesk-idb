@@ -67,9 +67,9 @@ app['lockscreen'] = {
                 });
 
                 const listener = async function (event) {
-                    if (event.key === " ") {
+                    if (event.key) {
                         event.preventDefault();
-                        await unlock(listener);
+                        await unlock();
                         document.removeEventListener('keydown', listener);
                     }
                 };
@@ -88,7 +88,9 @@ app['lockscreen'] = {
                         el.lock.remove();
                         el.lock = undefined;
                         resolve();
-                        listen.removeEventListener();
+                        if (listen) {
+                            listen.removeEventListener();
+                        }
                     });
                 });
             }
