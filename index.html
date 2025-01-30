@@ -151,6 +151,7 @@
                 await initscript('/system/ui.js');
                 await initscript('/system/lib/crop/cropper.js');
                 abt.ver = await fs.read('/system/info/currentver');
+                abt.lastmod = await fs.read('/system/info/currentveredit');
                 async function initapps() {
                     const contents = await fs.ls('/apps/');
                     for (const item of contents.items) {

@@ -62,10 +62,7 @@ app['lockscreen'] = {
                     }
                 });
             } else {
-                const what = el.lock.addEventListener('mousedown', async () => {
-                    await unlock(what);
-                });
-
+                
                 const listener = async function (event) {
                     if (event.key) {
                         event.preventDefault();
@@ -74,7 +71,12 @@ app['lockscreen'] = {
                     }
                 };
                 
-                document.addEventListener('keydown', listener);                
+                document.addEventListener('keydown', listener);
+
+                const what = el.lock.addEventListener('mousedown', async () => {
+                    await unlock(what);
+                    document.removeEventListener('keydown', listener);
+                });      
             }
 
             async function unlock(listen) {

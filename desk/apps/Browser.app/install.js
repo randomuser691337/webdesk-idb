@@ -1,3 +1,5 @@
+// No clue what lunatic still uses the WebDesk
+// Browser, but you do you I guess
 app['browser'] = {
     runs: true,
     name: 'Browser',
@@ -103,11 +105,11 @@ app['browser'] = {
             }
         }
 
-        const ok = tk.cb('b4 b6', '+', function () {
+        const whocares = tk.cb('b4 b6', '…', function () {
             const menu = tk.c('div', document.body, 'rightclick');
-            const pos = ok.getBoundingClientRect();
+            const pos = whocares.getBoundingClientRect();
             const thing2 = { clientX: pos.left, clientY: pos.top };
-            ui.rightclick(menu, thing2, ok, true);
+            ui.rightclick(menu, thing2, whocares, true);
             tk.cb('b3 b2', 'Install As Web App', async function () {
                 const id = gen(12);
                 const path = '/apps/' + id + '.app/';

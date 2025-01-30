@@ -1,3 +1,5 @@
+// Buggy mess, anyone willing to clean this mess
+// up will be given free espresso and a kitten
 app['webcomm'] = {
     runs: true,
     name: 'WebComm',

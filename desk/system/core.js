@@ -307,12 +307,12 @@ var wd = {
                         ui.show(tk.g('notif'));
                     }, 200);
                 }, ok);
-                tk.cb('b3 b2', 'Force Update', function () {
-                    if (sys.dev === true) {
+                if (sys.dev === true) {
+                    tk.cb('b3 b2', 'Force Update', function () {
                         fs.del('/system/webdesk');
                         wd.reboot();
-                    }
-                }, ok);
+                    }, ok);
+                }
                 tk.cb('b3 b2', 'Reboot/Reload', function () {
                     wd.reboot();
                 }, ok);
