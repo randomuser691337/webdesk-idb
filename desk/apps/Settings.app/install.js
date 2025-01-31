@@ -339,18 +339,21 @@ app['settings'] = {
         }, p3);
         tk.cb('b1', 'Back', () => ui.sw2(accPane, mainPane), accPane);
         // App pane
-        tk.cb('b1', 'Remove All', () => wm.wal(`<p>Warning: Removing all App Market apps will cause a reboot and delete them, but their data will remain.</p>`, async function () {
-            await fs.del('/system/apps.json');
-            await fs.delfold('/system/apps');
-            wd.reboot();
-        }, 'Okay'), appPane);
         tk.cb('b1', 'Back', () => ui.sw2(appPane, mainPane), appPane);
     },
     eraseassist: {
         runs: false,
         init: function () {
             ui.play('/system/lib/other/error.wav');
-            wm.wal(`<p>Warning: Erasing this WebDesk will destroy all data stored on it, including WebDesk itself. This cannot be undone!</p>`, () => fs.erase('reboot'), 'Erase', 'urgent');
+            const dark = ui.darken();
+            const menu = tk.c('div', dark, 'cm');
+            tk.img('/system/lib/img/icons/warn.svg', 'setupi', menu);
+            tk.p(`Are you sure?`, 'bold', menu);
+            tk.p(`You're about to erase this WebDesk. This can't be undone, everything will be deleted forever.`, undefined, menu);
+            tk.p(`Hit "Erase normally" if you're using WebDesk, or "Erase without reinstall" if you're using it later.`, undefined, menu);
+            tk.cb('b1 b2', 'Erase normally', () => fs.erase('reboot'), menu);
+            tk.cb('b1 b2', `Erase without reinstall`, () => fs.erase('runaway'), menu);
+            tk.cb('b1', `Close`, () => ui.dest(dark), menu);
         }
     },
     locset: {

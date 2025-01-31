@@ -198,7 +198,7 @@ p {
 .window {
     position: absolute;
     border-radius: var(--rad1);
-    box-shadow: rgba(0, 0, 0, 0.2) 0px 0px 150px 30px;
+    box-shadow: rgba(0, 0, 0, 0.3) 0px 0px 100px 20px;
     border: 1px solid var(--bc);
     width: auto;
     height: auto;
@@ -216,11 +216,7 @@ p {
 }
 
 .winf {
-    box-shadow: rgba(0, 0, 0, 0.30) 0px 0px 150px 30px;
-}
-
-.winf {
-    box-shadow: rgba(0, 0, 0, 0.30) 0px 0px 150px 30px;
+    box-shadow: rgba(0, 0, 0, 0.3) 0px 0px 100px 20px;
 }
 
 .content {

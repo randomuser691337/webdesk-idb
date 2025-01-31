@@ -167,7 +167,7 @@
                 }
 
                 await initapps();
-                await wd.fontsw('/system/lib/fonts/Poppins-Regular.wdf', '/system/lib/fonts/Poppins-Medium.wdf', '/system/lib/fonts/Poppins-Bold.wdf', '/system/lib/fonts/mono.wdf');
+                await wd.fontsw('/system/lib/fonts/Poppins-Regular.woff2', '/system/lib/fonts/Poppins-Medium.woff2', '/system/lib/fonts/Poppins-Bold.woff2', '/system/lib/fonts/mono.woff2');
                 ui.hide(tk.g('death'), 140);
             } catch (error) {
                 console.error(error);
@@ -413,25 +413,32 @@
             boot = true;
         } else {
             try {
+                boot = true;
                 document.body.innerHTML = "<p>Downloading update package...</p>";
                 const response = await fetch('desk.zip');
-                /*
-                Service workers auto update, what the fuck was I thinking
                 const test = await fs.read('/system/core.js');
                 if (test) {
                     navigator.serviceWorker.getRegistrations().then(registrations => {
-                        if (!Array.isArray(registrations) && registrations.length === 0) {
-                            for (let registration of registrations) {
-                                document.body.innerHTML += "<p>Removing old service worker...</p>";
-                                registration.unregister();
-                                if (registration.active) {
-                                    registration.active.postMessage({ type: 'stop' });
-                                    return;
-                                }
+                        for (let registration of registrations) {
+                            if (registration.active) {
+                                registration.active.postMessage({ type: 'update' });
                             }
                         }
                     });
-                } */
+                } else {
+                    if ("serviceWorker" in navigator) {
+                        try {
+                            const registration = await navigator.serviceWorker.register("offline.js");
+                            console.log("<i> Service Worker registered: ", registration.scope);
+                            document.body.innerHTML += '<p>Set up offline mode!</p>';
+                        } catch (error) {
+                            console.error("<!> Service Worker registration failed: ", error);
+                            document.body.innerHTML += `<p>Couldn't set up Offline Mode, WebDesk can't run offline.</p>`;
+                            rebooton = "false";
+                        }
+                    }
+                }
+
                 document.body.innerHTML += "<p>Downloaded, extracting files...</p>";
                 if (!response.ok) throw new Error(`Failed to fetch zip: ${response.statusText}`);
                 const blob = await response.blob();
@@ -441,7 +448,8 @@
                 for (const filename in files) {
                     const file = files[filename];
                     if (!file.dir) {
-                        if (filename.endsWith('.png') || filename.endsWith('.wav')) {
+                        // Only for extracting WebDesk files
+                        if (filename.endsWith('.png') || filename.endsWith('.wav') || filename.endsWith('.woff2')) {
                             const binaryContents = await file.async('blob');
                             const reader = new FileReader();
                             reader.onload = async function (e) {
@@ -482,18 +490,6 @@
                 }); */
 
                 const rebooton = params.get('reboot');
-
-                if ("serviceWorker" in navigator) {
-                    try {
-                        const registration = await navigator.serviceWorker.register("offline.js");
-                        console.log("<i> Service Worker registered: ", registration.scope);
-                        document.body.innerHTML += '<p>Set up offline mode!</p>';
-                    } catch (error) {
-                        console.error("<!> Service Worker registration failed: ", error);
-                        document.body.innerHTML += `<p>Couldn't set up Offline Mode, WebDesk can't run offline.</p>`;
-                        rebooton = "false";
-                    }
-                }
 
                 if (rebooton === "false") {
                     document.body.innerHTML += '<p><strong>Done! <button onclick="reboot();">Reboot</button></strong></p>';

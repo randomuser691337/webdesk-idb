@@ -927,38 +927,38 @@ var wd = {
         if (existingStyle) {
             existingStyle.remove();
         }
-
+    
         const normalURL = await fs.read(normal);
         const mediumURL = await fs.read(medium);
         const boldURL = await fs.read(bold);
         const monoURL = await fs.read(mono);
-
+    
         const style = document.createElement('style');
         style.id = 'dynamic-font';
-
+    
         style.innerHTML = `
             @font-face {
                 font-family: 'Font';
-                src: url(${normalURL}) format('truetype');
+                src: url(${normalURL}) format('woff2');
             }
             
             @font-face {
                 font-family: 'FontB';
-                src: url(${boldURL}) format('truetype');
+                src: url(${boldURL}) format('woff2');
             }
             
             @font-face {
                 font-family: 'FontM';
-                src: url(${mediumURL}) format('truetype');
+                src: url(${mediumURL}) format('woff2');
             }
             
             @font-face {
                 font-family: 'MonoS';
-                src: url(${monoURL}) format('truetype');
+                src: url(${monoURL}) format('woff2');
             }`;
-
+    
         document.head.appendChild(style);
-    },
+    },    
     tbcal: async function () {
         let px = 0;
         const ok = await fs.read('/system/standalonepx');

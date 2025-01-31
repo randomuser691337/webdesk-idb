@@ -293,6 +293,8 @@ var fs2 = {
             console.log("<!> WebDesk erased.");
             if (path === "reboot") {
                 self.postMessage({ type: 'reboot' });
+            } else if (path === "runaway") {
+                self.postMessage({ type: 'runaway' });
             }
         };
 

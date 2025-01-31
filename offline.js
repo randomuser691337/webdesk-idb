@@ -1,13 +1,12 @@
-// https://dev.to/naimur/building-offline-ready-webpage-with-service-worker-and-cache-storage-3dbk
-
 const cacheName = "skibidi hawk tuah";
 const cacheUrls = ["index.html", "fs.js", "wfs.js", "jszip.js", "target.json"];
-const ver = "0.0.1";
+const ver = "0.0.2";
 
 self.addEventListener("install", async (event) => {
     try {
         const cache = await caches.open(cacheName);
         await cache.addAll(cacheUrls);
+        console.log(`<i> Cache installed (version: ${ver})`);
     } catch (error) {
         console.error("Service Worker installation failed:", error);
     }
@@ -24,8 +23,23 @@ self.addEventListener("message", (event) => {
     } else if (event.data && event.data.type === "hello") {
         console.log(ver);
         event.source.postMessage({ type: ver });
+    } else if (event.data && event.data.type === "update") {
+        update();
     }
 });
+
+async function update() {
+    try {
+        console.log("<i> Clearing old cache...");
+        const cache = await caches.open(cacheName);
+        await caches.delete(cacheName);
+        const newCache = await caches.open(cacheName);
+        await newCache.addAll(cacheUrls);
+        console.log("<i> Updated offline mode");
+    } catch (error) {
+        console.error("Error clearing or recaching the cache:", error);
+    }
+}
 
 if (navigator.onLine === false) {
     console.log(`<i> Worker ${ver} is initializing... (active)`);
@@ -37,18 +51,18 @@ if (navigator.onLine === false) {
                 try {
                     const cachedResponse = await cache.match(event.request);
                     if (cachedResponse) {
-                        console.log("cachedResponse: ", event.request.url);
+                        console.log("<i> cachedResponse: ", event.request.url);
                         return cachedResponse;
                     }
 
                     const fetchResponse = await fetch(event.request);
                     if (fetchResponse) {
-                        console.log("fetchResponse: ", event.request.url);
+                        console.log("<i> fetchResponse: ", event.request.url);
                         await cache.put(event.request, fetchResponse.clone());
                         return fetchResponse;
                     }
                 } catch (error) {
-                    console.log("Fetch failed: ", error);
+                    console.log("<!> Fetch failed: ", error);
                     const cachedResponse = await cache.match("index.html");
                     return cachedResponse;
                 }

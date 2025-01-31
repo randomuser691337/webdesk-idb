@@ -12,9 +12,15 @@ wfs.onmessage = function (event) {
     } else if (type === 'db_ready') {
         boot();
     } else if (type === "reboot") {
-        wd.reboot();
+        try {
+            wd.reboot();
+        } catch (error) {
+            window.location.reload();
+        }
+    } else if (type === "runaway") {
+        window.location.src = "https://meower.xyz?reason=You were sent here because you erased WebDesk. This is the developer's site, feel free to look around!";
     } else {
-        console.warn('Unknown message type or requestId from wfs:', type);
+        console.warn('<!> Unknown message type or requestId from wfs:', type);
     }
 };
 
