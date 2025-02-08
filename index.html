@@ -16,20 +16,20 @@
 
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="theme-color" content="#5a5a5a">
     <link rel="shortcut icon" href="/system/lib/img/favicon.png">
     <link rel="apple-touch-icon" href="/system/lib/img/noround.png">
-    <title>WebDesk (IDB Filesystem)</title>
+    <title>WebDesk</title>
 </head>
 <script>
     let url = window.location.href;
     let params = new URLSearchParams(window.location.search);
 
     var abt = {
-        lastmod: "Jan 29, 2025",
-        ver: "0.2.9",
+        lastmod: "Feb 7, 2025",
+        ver: "0.3.0",
     }
 
     var sys = {
@@ -118,15 +118,26 @@
         return script;
     }
 
+    if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.register('/offline.js')
+            .then((registration) => {
+                console.log('Service Worker registered with scope:', registration.scope);
+            })
+            .catch((error) => {
+                console.error('Service Worker registration failed:', error);
+            });
+    }
+
     async function boot() {
         let boot = false;
         setTimeout(function () {
             if (boot === false) {
-                document.body.innerHTML = `<p><strong>WebDesk Net Recovery</strong></p>
+                document.body.innerHTML = `<style>body{color:#000 !important;background:#fff !important;}</body>
+                <p><strong>WebDesk Net Recovery</strong></p>
                 <p>WebDesk hasn't booted within 10 seconds, so recovery has been initialized. Choose an option below</p>
                 <button onclick="reboot();">Reboot</button><button onclick="fs.del('/system/webdesk');setTimeout(function () {reboot();}, 200);">Reinstall WebDesk (Data is kept)</button>`;
             }
-        }, 7000);
+        }, 10000);
         const uid2 = params.get('id');
         const eepysleepy = await fs.read('/system/eepysleepy');
         const migcheck = await fs.read('/system/migval');
@@ -411,6 +422,7 @@
                 });
             }
             boot = true;
+            await app.appmark.checkforup();
         } else {
             try {
                 boot = true;
@@ -425,18 +437,6 @@
                             }
                         }
                     });
-                } else {
-                    if ("serviceWorker" in navigator) {
-                        try {
-                            const registration = await navigator.serviceWorker.register("offline.js");
-                            console.log("<i> Service Worker registered: ", registration.scope);
-                            document.body.innerHTML += '<p>Set up offline mode!</p>';
-                        } catch (error) {
-                            console.error("<!> Service Worker registration failed: ", error);
-                            document.body.innerHTML += `<p>Couldn't set up Offline Mode, WebDesk can't run offline.</p>`;
-                            rebooton = "false";
-                        }
-                    }
                 }
 
                 document.body.innerHTML += "<p>Downloaded, extracting files...</p>";
@@ -499,6 +499,7 @@
                 }
             } catch (error) {
                 document.body.innerHTML = `
+                <style>body{color:#000 !important;background:#fff !important;}</body>
                 <p><strong>WebDesk Net Recovery</strong></p>
                 <p>An error occured while attempting install: ${error}</p>
                 <p>Choose an option below</p>

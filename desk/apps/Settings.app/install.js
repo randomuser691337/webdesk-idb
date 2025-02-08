@@ -2,7 +2,7 @@ app['settings'] = {
     runs: true,
     name: 'Settings',
     init: async function () {
-        const main = tk.mbw('Settings', '310px', 'auto', true, undefined, undefined);
+        const main = tk.mbw('Settings', '310px', 'auto', true, undefined, undefined, '/apps/Settings.app/icon.svg');
         const generalPane = tk.c('div', main.main, 'hide');
         const appearPane = tk.c('div', main.main, 'hide');
         const accPane = tk.c('div', main.main, 'hide');
@@ -350,9 +350,7 @@ app['settings'] = {
             tk.img('/system/lib/img/icons/warn.svg', 'setupi', menu);
             tk.p(`Are you sure?`, 'bold', menu);
             tk.p(`You're about to erase this WebDesk. This can't be undone, everything will be deleted forever.`, undefined, menu);
-            tk.p(`Hit "Erase normally" if you're using WebDesk, or "Erase without reinstall" if you're using it later.`, undefined, menu);
-            tk.cb('b1 b2', 'Erase normally', () => fs.erase('reboot'), menu);
-            tk.cb('b1 b2', `Erase without reinstall`, () => fs.erase('runaway'), menu);
+            tk.cb('b1', 'Erase', () => fs.erase('reboot'), menu);
             tk.cb('b1', `Close`, () => ui.dest(dark), menu);
         }
     },

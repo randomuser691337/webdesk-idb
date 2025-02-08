@@ -2,7 +2,7 @@ app['files'] = {
     runs: true,
     name: 'Files',
     init: async function () {
-        const win = tk.mbw(`Files`, '340px', 'auto', true, undefined, undefined);
+        const win = tk.mbw(`Files`, '340px', 'auto', true, undefined, undefined, '/apps/Files.app/icon.svg');
         const search = tk.c('input', win.main, 'i1');
         win.name.innerHTML = "";
         const breadcrumbs = tk.c('div', win.name);
@@ -157,7 +157,7 @@ app['files'] = {
                     let timer;
 
                     function openmenu() {
-                        if ((item.path.startsWith('/system') || item.path.startsWith('/user/info')) && sys.dev === false) {
+                        if ((item.path.startsWith('/system') || item.path.startsWith('/user/info') || thing.path.startsWith('/apps/')) && sys.dev === false) {
                             wm.snack('Enable Developer Mode to modify this folder.', 6000);
                             return;
                         }
@@ -203,136 +203,158 @@ app['files'] = {
                     }
 
                     const fileItem = tk.cb('flist width', "File: " + item.name, async function () {
-                        if (!sys.dev && item.path.startsWith('/system/') || item.path.startsWith('/user/info/') && sys.dev === false) {
-                            wm.snack('Enable Developer Mode to modify system files.', 6000);
-                            return;
-                        }
-
-                        const skibidi = tk.c('div', document.body, 'cm');
-                        skibidi.innerText = `Loading ${item.name}, this might take a bit`;
-                        const filecontent = await fs.read(item.path);
-                        const menu = tk.c('div', document.body, 'cm');
-                        const p = tk.ps(item.path, 'bold', menu);
-                        p.style.marginBottom = "7px";
-
-                        if (item.path.startsWith('/system/') || item.path.startsWith('/user/info/')) {
-                            tk.p('Important file, modifying it could cause damage.', 'warn', menu);
-                        }
-                        if (item.path.startsWith('/user/info/name')) {
-                            tk.p('Deleting this file will erase your data on next restart.', 'warn', menu);
-                        }
-                        if (!filecontent.includes('data:video')) {
-                            if (filecontent.includes('data:')) {
-                                const thing = await tk.img(filecontent, 'embed', menu, false, true);
-                                thing.style.marginBottom = "4px";
-                            } else {
-                                const thing = tk.c('div', menu, 'embed resizeoff');
-                                const genit = gen(8);
-                                thing.id = genit;
-                                const editor = ace.edit(`${genit}`);
-                                editor.setOptions({
-                                    fontFamily: "MonoS",
-                                    fontSize: "9px",
-                                    wrap: true,
-                                });
-                                if (ui.light !== true) editor.setTheme("ace/theme/monokai");
-                                thing.style.marginBottom = "4px";
-                                thing.style.height = "130px";
-                                editor.resize();
-                                editor.setValue(filecontent, -1);
-                                editor.setReadOnly(true);
+                        try {
+                            if (sys.dev === false && (item.path.startsWith('/system/') || item.path.startsWith('/user/info/') || item.path.startsWith('/apps/'))) {
+                                wm.snack('Enable Developer Mode to modify system files.', 6000);
+                                return;
                             }
-                        }
-
-                        const btnmenu = tk.c('div', menu, 'brick-layout');
-                        btnmenu.style.marginBottom = "4px";
-
-                        tk.cb('b3', 'Open', async function () {
-                            if (filecontent.includes('data:')) {
-                                app.imgview.init(filecontent);
-                            } else {
-                                app.textedit.init(filecontent, item.path);
+    
+                            const skibidi = tk.c('div', document.body, 'cm');
+                            skibidi.innerText = `Loading ${item.name}, this might take a bit`;
+                            const filecontent = await fs.read(item.path);
+                            const menu = tk.c('div', document.body, 'cm');
+                            const p = tk.ps(item.path, 'bold', menu);
+    
+                            if (item.path.startsWith('/system/') || item.path.startsWith('/user/info/')) {
+                                tk.p('Important file, modifying it could cause damage.', 'warn', menu);
                             }
-                            ui.dest(menu);
-                        }, btnmenu);
-                        tk.cb('b3', 'Open with', function () {
-                            ui.dest(menu);
-                            const menu2 = tk.c('div', document.body, 'cm');
-                            const btnmenu2 = tk.c('div', menu2, 'brick-layout');
+                            if (item.path.startsWith('/user/info/name')) {
+                                tk.p('Deleting this file will erase your data on next restart.', 'warn', menu);
+                            }
+
+                            let thing;
+    
+                            try {
+                                if (!filecontent.startsWith('data:video')) {
+                                    if (filecontent.startsWith('data:')) {
+                                        thing = await tk.img(filecontent, 'embed', menu, false, true);
+                                        thing.style.marginBottom = "4px";
+                                        p.style.marginBottom = "7px";
+                                    } else {
+                                        const thing = tk.c('div', menu, 'embed resizeoff');
+                                        const genit = gen(8);
+                                        thing.id = genit;
+                                        const editor = ace.edit(`${genit}`);
+                                        editor.setOptions({
+                                            fontFamily: "MonoS",
+                                            fontSize: "9px",
+                                            wrap: true,
+                                        });
+                                        if (ui.light !== true) editor.setTheme("ace/theme/monokai");
+                                        thing.style.marginBottom = "4px";
+                                        thing.style.height = "130px";
+                                        editor.resize();
+                                        editor.setValue(filecontent, -1);
+                                        editor.setReadOnly(true);
+                                        p.style.marginBottom = "7px";
+                                    }
+                                }
+                            } catch (error) {
+                                console.log('<!> ' + error);
+                                const ok = tk.p('Failed to load preview.', 'warn', menu);
+                                ok.style.marginBottom = "7px";
+                                if (thing) {
+                                    thing.img.remove();
+                                }
+                            }
+    
+                            const btnmenu = tk.c('div', menu, 'brick-layout');
                             btnmenu.style.marginBottom = "4px";
-                            tk.cb('b3', 'Iris Media Viewer', function () {
-                                app.imgview.init(filecontent, item.path);
-                                ui.dest(menu2);
-                            }, btnmenu2);
-                            tk.cb('b3', 'Text Editor', function () {
-                                app.textedit.init(filecontent, item.path);
-                                ui.dest(menu2);
-                            }, btnmenu2);
-                            tk.cb('b3', 'Weather Archive', function () {
-                                app.wetter.init(true, filecontent);
-                                ui.dest(menu2);
-                            }, btnmenu2);
-                            tk.cb('b3', 'console.log', function () {
-                                console.log(filecontent);
-                                ui.dest(menu2);
-                            }, btnmenu2);
-                            tk.cb('b1', 'Cancel', () => ui.dest(menu2), menu2);
-                        }, btnmenu);
-                        tk.cb('b3', 'Download', () => {
-                            wd.download(filecontent, `WebDesk File ${gen(4)}`);
-                            ui.dest(menu);
-                        }, btnmenu);
-                        tk.cb('b3', 'WebDrop', function () {
-                            ui.dest(menu);
-                            const menu2 = tk.c('div', document.body, 'cm');
-                            const input = tk.c('input', menu2, 'i1');
-                            input.placeholder = "Enter DeskID";
-                            tk.cb('b1', 'Cancel', () => ui.dest(menu2), menu2);
-                            tk.cb('b1', 'WebDrop', async function () {
-                                menu2.innerHTML = `<p class="bold">Sending file</p><p>Depending on the size, this might take a bit</p>`;
-                                tk.cb('b1', 'Close (No status updates)', () => ui.dest(menu2), menu2);
-                                await custf(input.value, item.name, filecontent).then(success => {
-                                    menu2.innerHTML = success
-                                        ? `<p class="bold">File sent</p><p>The other person can accept or deny</p>`
-                                        : `<p class="bold">An error occurred</p><p>Make sure the ID is correct</p>`;
-                                    tk.cb('b1', 'Close', () => ui.dest(menu2), menu2);
-                                });
-                            }, menu2);
-                        }, btnmenu);
-                        tk.cb('b3', 'Rename/Move', function () {
-                            ui.dest(menu);
-                            const menu2 = tk.c('div', document.body, 'cm');
-                            const input = tk.c('input', menu2, 'i1');
-                            input.placeholder = "Path for copying/moving";
-                            input.value = item.path;
-                            tk.cb('b1', 'Cancel', () => ui.dest(menu2), menu2);
-                            tk.cb('b1', 'Copy', () => {
-                                fs.write(input.value, filecontent);
-                                navto(path);
-                                ui.dest(menu2);
-                            }, menu2);
-                            tk.cb('b1', 'Rename/Move', () => {
-                                fs.write(input.value, filecontent);
-                                fs.del(item.path);
-                                navto(path);
-                                ui.dest(menu2);
-                            }, menu2);
-                        }, btnmenu);
-                        tk.cb('b3', 'Delete file', () => {
-                            ui.dest(menu);
-                            const menu2 = tk.c('div', document.body, 'cm');
-                            tk.ps('Are you sure you want to delete ' + item.path + '?', undefined, menu2);
-                            tk.ps(`This cannot be undone!`, undefined, menu2);
-                            tk.cb('b1', 'Delete file', () => {
-                                fs.del(item.path);
-                                ui.slidehide(fileItem, 100);
-                                ui.dest(fileItem);
-                                ui.dest(menu2);
-                            }, menu2);
-                            tk.cb('b1', 'Cancel', () => ui.dest(menu2), menu2);
-                        }, btnmenu);
-                        tk.cb('b1', 'Cancel', () => ui.dest(menu), menu);
-                        ui.dest(skibidi);
+    
+                            tk.cb('b3', 'Open', async function () {
+                                if (filecontent.startsWith('data:')) {
+                                    app.imgview.init(filecontent);
+                                } else {
+                                    app.textedit.init(filecontent, item.path);
+                                }
+                                ui.dest(menu);
+                            }, btnmenu);
+                            tk.cb('b3', 'Open with', function () {
+                                ui.dest(menu);
+                                const menu2 = tk.c('div', document.body, 'cm');
+                                const btnmenu2 = tk.c('div', menu2, 'brick-layout');
+                                btnmenu.style.marginBottom = "4px";
+                                tk.cb('b3', 'Iris Media Viewer', function () {
+                                    app.imgview.init(filecontent, item.path);
+                                    ui.dest(menu2);
+                                }, btnmenu2);
+                                tk.cb('b3', 'Text Editor', function () {
+                                    app.textedit.init(filecontent, item.path);
+                                    ui.dest(menu2);
+                                }, btnmenu2);
+                                tk.cb('b3', 'Weather Archive', function () {
+                                    app.wetter.init(true, filecontent);
+                                    ui.dest(menu2);
+                                }, btnmenu2);
+                                tk.cb('b3', 'console.log', function () {
+                                    console.log(filecontent);
+                                    ui.dest(menu2);
+                                }, btnmenu2);
+                                tk.cb('b1', 'Cancel', () => ui.dest(menu2), menu2);
+                            }, btnmenu);
+                            tk.cb('b3', 'Download', () => {
+                                wd.download(filecontent, `WebDesk File ${gen(4)}`);
+                                ui.dest(menu);
+                            }, btnmenu);
+                            tk.cb('b3', 'WebDrop', function () {
+                                ui.dest(menu);
+                                const menu2 = tk.c('div', document.body, 'cm');
+                                const input = tk.c('input', menu2, 'i1');
+                                input.placeholder = "Enter DeskID";
+                                tk.cb('b1', 'Cancel', () => ui.dest(menu2), menu2);
+                                tk.cb('b1', 'WebDrop', async function () {
+                                    menu2.innerHTML = `<p class="bold">Sending file</p><p>Depending on the size, this might take a bit</p>`;
+                                    tk.cb('b1', 'Close (No status updates)', () => ui.dest(menu2), menu2);
+                                    await custf(input.value, item.name, filecontent).then(success => {
+                                        menu2.innerHTML = success
+                                            ? `<p class="bold">File sent</p><p>The other person can accept or deny</p>`
+                                            : `<p class="bold">An error occurred</p><p>Make sure the ID is correct</p>`;
+                                        tk.cb('b1', 'Close', () => ui.dest(menu2), menu2);
+                                    });
+                                }, menu2);
+                            }, btnmenu);
+                            tk.cb('b3', 'Rename/Move', function () {
+                                ui.dest(menu);
+                                const menu2 = tk.c('div', document.body, 'cm');
+                                const input = tk.c('input', menu2, 'i1');
+                                input.placeholder = "Path for copying/moving";
+                                input.value = item.path;
+                                tk.cb('b1', 'Cancel', () => ui.dest(menu2), menu2);
+                                tk.cb('b1', 'Copy', () => {
+                                    fs.write(input.value, filecontent);
+                                    navto(path);
+                                    ui.dest(menu2);
+                                }, menu2);
+                                tk.cb('b1', 'Rename/Move', () => {
+                                    fs.write(input.value, filecontent);
+                                    fs.del(item.path);
+                                    navto(path);
+                                    ui.dest(menu2);
+                                }, menu2);
+                            }, btnmenu);
+                            tk.cb('b3', 'Delete file', () => {
+                                ui.dest(menu);
+                                const menu2 = tk.c('div', document.body, 'cm');
+                                tk.ps('Are you sure you want to delete ' + item.path + '?', undefined, menu2);
+                                tk.ps(`This cannot be undone!`, undefined, menu2);
+                                tk.cb('b1', 'Delete file', () => {
+                                    fs.del(item.path);
+                                    ui.slidehide(fileItem, 100);
+                                    ui.dest(fileItem);
+                                    ui.dest(menu2);
+                                }, menu2);
+                                tk.cb('b1', 'Cancel', () => ui.dest(menu2), menu2);
+                            }, btnmenu);
+                            tk.cb('b1', 'Cancel', () => ui.dest(menu), menu);
+                            ui.dest(skibidi);
+                        } catch (error) {
+                            console.log('<!> ' + error);
+                            const fileItem = tk.cb('flist width warn', "File (One or more failed to load)" + item.name, async function () {
+                                wm.snack('Trying to load in TextEdit...');
+                                const cont = await fs.read(item.path);
+                                app.textedit.init(cont, item.path);
+                            });
+                        }
                     }, items);
 
                     if (item.name === ".folder") {
@@ -474,7 +496,7 @@ app['files'] = {
                                 }, menu);
                                 tk.cb('b1', 'Choose', function () {
                                     ui.dest(menu); ui.dest(win.win);
-                                    if (thing.path.startsWith('/system/') || thing.path.startsWith('/user/info/')) {
+                                    if (thing.path.startsWith('/system/') || thing.path.startsWith('/user/info/') || thing.path.startsWith('/apps/')) {
                                         if (sys.dev === false) {
                                             wm.snack(`Enable Developer Mode to make or edit files here.`);
                                             return;
@@ -506,7 +528,7 @@ app['files'] = {
                     if (inp.value === "") {
                         wm.snack('Enter a filename.');
                     } else {
-                        if (selectedPath.startsWith('/system') || selectedPath.startsWith('/user/info')) {
+                        if (selectedPath.startsWith('/system') || selectedPath.startsWith('/user/info') || selectedPath.startsWith('/apps/')) {
                             if (sys.dev === false) {
                                 wm.snack(`Enable Developer Mode to make or edit files here.`);
                                 return;

@@ -88,8 +88,8 @@ app['system'] = {
             const first = tk.c('div', main, 'setb');
             tk.img('/system/lib/img/setup/first.svg', 'setupi', first);
             function defaultsetup() {
-                tk.p('Welcome to WebDesk!', 'h2', first);
-                tk.cb('b1', `EchoDesk`, function () {
+                tk.p('Welcome to WebDesk', 'h2', first);
+                /* tk.cb('b1', `EchoDesk`, function () {
                     const echotemp = tk.c('div', main, 'setb hide');
                     tk.img('/system/lib/img/setup/quick.png', 'setupi', echotemp);
                     tk.p('EchoDesk', 'h2', echotemp);
@@ -105,15 +105,22 @@ app['system'] = {
                     wd.desktop('Guest', 'min');
                     fs.write('/user/files/Welcome to WebDesk!.txt', `Welcome to WebDesk! This is your Files folder, where things you upload are stored. Use the buttons at the top to navigate between folders, right-click/tap and hold a file to see it's info, and normal tap/click it to open it.`);
                     wm.notif('Welcome to WebDesk!', `You're logged in as a guest. Keep in mind, WebDesk will erase itself on reload, and some features may be limited.`);
-                }, first);
-                tk.cb('b1', `Let's go`, () => ui.sw2(first, transfer), first);
+                }, first); */
+                tk.cb('b1', `What is WebDesk?`, () => app.textedit.init(`WebDesk is like a desktop in your browser.
+It saves its files to your browser, so everything is done locally.
+WebDesk also has an app to call, message or share files with people, called WebComm.
+To use WebDesk, or copy data, hit "Continue".`, undefined, true), first);
+                tk.cb('b1', `Continue`, () => ui.sw2(first, transfer), first);
             }
             if (isid !== true) {
                 defaultsetup();
             } else {
                 tk.p('Welcome to WebDesk!', 'h2', first);
-                tk.p(`WebDesk is like a desktop right in your browser. Someone wants to talk to you, so pick an option below to start.`, undefined, first);
-                const split3 = tk.c('div', first, 'split');
+                tk.p(`WebDesk is like a desktop right in your browser. Someone shared their ID with you, so set up a user to talk to them!`, undefined, first);
+                tk.cb('b1 b2', 'Set up WebDesk', function () {
+                    defaultsetup();
+                }, first);
+                /* const split3 = tk.c('div', first, 'split');
                 const id23 = tk.c('div', split3, 'splititem');
                 tk.p('Set up WebDesk', 'h2', id23);
                 tk.p(`Take a moment to set things up. You'll get to pick a name and start talking once you're ready.`, undefined, id23);
@@ -129,13 +136,14 @@ app['system'] = {
                     wd.desktop('Guest', 'min');
                     fs.write('/user/files/Welcome to WebDesk!.txt', `Welcome to WebDesk! This is your Files folder, where uploaded items are stored. Use the buttons at the top to navigate folders, right-click/tap and hold a file for info, or click/tap it to open.`);
                     wm.notif('Welcome to WebDesk!', `You're logged in as a guest. Keep in mind, WebDesk will erase itself on reload, and some features may be limited.`);
-                }, ok);
+                }, ok); */
             }
             // migrate menu
             const transfer = tk.c('div', main, 'setb hide');
             tk.img('/system/lib/img/setup/quick.png', 'setupi', transfer);
             tk.p('Quick Start', 'h2', transfer);
-            tk.p('To copy your data, just scan the QR code, or open Data Assistant on the other WebDesk, hit "Migrate", and enter this code:', undefined, transfer);
+            tk.p(`If you don't have another WebDesk, hit "No thanks".`, undefined, transfer);
+            tk.p('To copy your data, just scan the QR code, or open Migrate on the other WebDesk, hit "Migrate", and enter this code:', undefined, transfer);
             const split = tk.c('div', transfer, 'split');
             const id2 = tk.c('div', split, 'splititem');
             tk.p('--------', 'h2 deskid', id2);
@@ -228,7 +236,7 @@ app['system'] = {
             tk.img('/system/lib/img/setup/check.svg', 'setupi', sum);
             tk.p('All done!', 'h2', sum);
             tk.p('Make sure to check Settings for more options.', undefined, sum);
-            tk.cb('b1 rb', 'Erase & restart', function () { app.settings.eraseassist.init(); }, sum); tk.cb('b1', 'Finish', function () { wd.reboot(); }, sum);
+            tk.cb('b1', 'Erase & restart', function () { app.settings.eraseassist.init(); }, sum); tk.cb('b1', 'Finish', function () { wd.reboot(); }, sum);
             sum.id = "setupdone";
         }
     },
